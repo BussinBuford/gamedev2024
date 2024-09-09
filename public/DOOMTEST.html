@@ -15,12 +15,30 @@
 <body>
     <h1>Play DOOM in Browser</h1>
     <div id="emulator" class="emulator-container"></div>
+    <button onclick="requestFullscreen();">Fullscreen</button>
 
     <script src="https://archive.org/download/emularity/emularity.js"></script>
     <script>
+        function requestFullscreen() {
+            const emulator = document.getElementById('emulator');
+            if (emulator.requestFullscreen) {
+                emulator.requestFullscreen();
+            } else if (emulator.mozRequestFullScreen) { // Firefox
+                emulator.mozRequestFullScreen();
+            } else if (emulator.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                emulator.webkitRequestFullscreen();
+            } else if (emulator.msRequestFullscreen) { // IE/Edge
+                emulator.msRequestFullscreen();
+            }
+        }
+
         Emularity.load({
             url: "https://archive.org/download/DOOMShareware/DOOMShareware.jsdos",
             canvas: document.getElementById('emulator')
+        }).then(function (emulator) {
+            console.log("Emulator loaded successfully");
+        }).catch(function (error) {
+            console.error("Error loading emulator: ", error);
         });
     </script>
 </body>
