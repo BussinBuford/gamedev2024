@@ -17,7 +17,7 @@
     <div id="emulator" class="emulator-container"></div>
     <button onclick="requestFullscreen();">Fullscreen</button>
 
-    <script src="https://wad-commander.com/emularity.js"></script>
+    <script src="https://wadcmd.com/emularity.js"></script>
     <script>
         function requestFullscreen() {
             const emulator = document.getElementById('emulator');
@@ -33,7 +33,7 @@
         }
 
         Emularity.load({
-            url: "https://wad-commander.com/DOOMShareware.jsdos",
+            url: "https://wadcmd.com/DOOMShareware.jsdos",
             canvas: document.getElementById('emulator')
         }).then(function (emulator) {
             console.log("Emulator loaded successfully");
