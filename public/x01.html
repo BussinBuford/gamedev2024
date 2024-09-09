@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Photo Capture</title>
+    <style>
+        #video {
+            border: 1px solid black;
+            width: 320px;
+            height: 240px;
+        }
+        #canvas {
+            display: none;
+        }
+        #photo {
+            border: 1px solid black;
+            width: 320px;
+            height: 240px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Webcam Photo Capture</h1>
+    <div>
+        <video id="video" autoplay></video>
+        <button id="snap">Take Photo</button>
+    </div>
+    <canvas id="canvas"></canvas>
+    <div>
+        <img id="photo" alt="Your photo will appear here">
+    </div>
+
+    <script>
+        // Access the webcam
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const photo = document.getElementById('photo');
+        const snap = document.getElementById('snap');
+        const context = canvas.getContext('2d');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing the webcam: " + err);
+            });
+
+        // Capture the photo
+        snap.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const data = canvas.toDataURL('image/png');
+            photo.setAttribute('src', data);
+        });
+    </script>
+</body>
+</html>
