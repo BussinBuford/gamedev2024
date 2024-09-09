@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play DOOM in Browser</title>
+    <style>
+        .dosbox-container {
+            width: 640px;
+            height: 480px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Play DOOM in Browser</h1>
+    <div id="dosbox" class="dosbox-container"></div>
+    <button onclick="dosbox.requestFullscreen();">Fullscreen</button>
+
+    <script src="https://js-dos.com/cdn/js-dos-api.js"></script>
+    <script>
+        const dosbox = new Dosbox({
+            id: "dosbox",
+            onload: function (dosbox) {
+                dosbox.run("https://js-dos.com/cdn/upload/DOOM.zip", "./doom");
+            },
+            onrun: function (dosbox, app) {
+                console.log("App '" + app + "' is running");
+            }
+        });
+    </script>
+</body>
+</html>
