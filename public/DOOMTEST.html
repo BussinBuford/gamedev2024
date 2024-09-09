@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play DOOM in Browser</title>
     <style>
-        .dosbox-container {
+        .emulator-container {
             width: 640px;
             height: 480px;
             border: 1px solid black;
@@ -14,19 +14,13 @@
 </head>
 <body>
     <h1>Play DOOM in Browser</h1>
-    <div id="dosbox" class="dosbox-container"></div>
-    <button onclick="dosbox.requestFullscreen();">Fullscreen</button>
+    <div id="emulator" class="emulator-container"></div>
 
-    <script src="https://js-dos.com/cdn/js-dos-api.js"></script>
+    <script src="https://archive.org/download/emularity/emularity.js"></script>
     <script>
-        const dosbox = new Dosbox({
-            id: "dosbox",
-            onload: function (dosbox) {
-                dosbox.run("https://js-dos.com/cdn/upload/DOOM.zip", "./doom");
-            },
-            onrun: function (dosbox, app) {
-                console.log("App '" + app + "' is running");
-            }
+        Emularity.load({
+            url: "https://archive.org/download/DOOMShareware/DOOMShareware.jsdos",
+            canvas: document.getElementById('emulator')
         });
     </script>
 </body>
