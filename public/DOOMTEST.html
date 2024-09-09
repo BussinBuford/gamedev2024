@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play DOOM in Browser</title>
     <style>
-        .emulator-container {
+        .dosbox-container {
             width: 640px;
             height: 480px;
             border: 1px solid black;
@@ -14,31 +14,32 @@
 </head>
 <body>
     <h1>Play DOOM in Browser</h1>
-    <div id="emulator" class="emulator-container"></div>
+    <div id="dosbox" class="dosbox-container"></div>
     <button onclick="requestFullscreen();">Fullscreen</button>
 
-    <script src="https://wadcmd.com/emularity.js"></script>
+    <script src="https://js-dos.com/cdn/js-dos-api.js"></script>
     <script>
         function requestFullscreen() {
-            const emulator = document.getElementById('emulator');
-            if (emulator.requestFullscreen) {
-                emulator.requestFullscreen();
-            } else if (emulator.mozRequestFullScreen) { // Firefox
-                emulator.mozRequestFullScreen();
-            } else if (emulator.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                emulator.webkitRequestFullscreen();
-            } else if (emulator.msRequestFullscreen) { // IE/Edge
-                emulator.msRequestFullscreen();
+            const dosbox = document.getElementById('dosbox');
+            if (dosbox.requestFullscreen) {
+                dosbox.requestFullscreen();
+            } else if (dosbox.mozRequestFullScreen) { // Firefox
+                dosbox.mozRequestFullScreen();
+            } else if (dosbox.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                dosbox.webkitRequestFullscreen();
+            } else if (dosbox.msRequestFullscreen) { // IE/Edge
+                dosbox.msRequestFullscreen();
             }
         }
 
-        Emularity.load({
-            url: "https://wadcmd.com/DOOMShareware.jsdos",
-            canvas: document.getElementById('emulator')
-        }).then(function (emulator) {
-            console.log("Emulator loaded successfully");
-        }).catch(function (error) {
-            console.error("Error loading emulator: ", error);
+        const dosbox = new Dosbox({
+            id: "dosbox",
+            onload: function (dosbox) {
+                dosbox.run("https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/DOOM.zip", "./DOOM");
+            },
+            onrun: function (dosbox, app) {
+                console.log("App '" + app + "' is running");
+            }
         });
     </script>
 </body>
