@@ -17,8 +17,11 @@
     <div id="dosbox" class="dosbox-container"></div>
     <button onclick="requestFullscreen();">Fullscreen</button>
 
+    <!-- Load js-dos API -->
     <script src="https://js-dos.com/cdn/js-dos-api.js"></script>
+
     <script>
+        // Fullscreen function
         function requestFullscreen() {
             const dosbox = document.getElementById('dosbox');
             if (dosbox.requestFullscreen) {
@@ -32,14 +35,43 @@
             }
         }
 
+        // Initialize Dosbox and set up the game
         const dosbox = new Dosbox({
             id: "dosbox",
             onload: function (dosbox) {
-                dosbox.run("https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/DOOM.zip", "./DOOM");
+                // Run the game from the ZIP file and mount it
+                console.log("DOSBox loaded, attempting to run DOOM...");
+                dosbox.run("https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/DOOM/doom.zip", ".")
+                    .then(() => {
+                        console.log("Game files loaded successfully.");
+                    })
+                    .catch((error) => {
+                        console.error("Error loading game files:", error);
+                    });
             },
             onrun: function (dosbox, app) {
-                console.log("App '" + app + "' is running");
+                // Manually start doom.exe after loading
+                console.log("App '" + app + "' is running.");
+                try {
+                    dosbox.sendCommand("doom.exe\n");
+                    console.log("Successfully sent 'doom.exe' command.");
+                } catch (error) {
+                    console.error("Error running 'doom.exe':", error);
+                }
+            },
+            onerror: function (error) {
+                console.error("Error initializing Dosbox:", error);
             }
+        });
+
+        // Debugging: log exit status and error handling
+        window.addEventListener("error", function (e) {
+            console.error("Unhandled error:", e.message);
+        });
+
+        // Handle specific exit status like exit(101)
+        window.addEventListener("unhandledrejection", function (event) {
+            console.error("Unhandled promise rejection:", event.reason);
         });
     </script>
 </body>
