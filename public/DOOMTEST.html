@@ -68,13 +68,12 @@
             onload: function (dosbox) {
                 // Run the game from the ZIP file and mount it
                 console.log("DOSBox loaded, attempting to run DOOM...");
-                dosbox.run("https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/DOOM/doom.zip", "./DOOM")
-                    .then(() => {
-                        console.log("Game files loaded successfully.");
-                    })
-                    .catch((error) => {
-                        displayError("Error loading game files: " + error.message);
-                    });
+                try {
+                    dosbox.run("https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/DOOM/doom.zip", "./DOOM");
+                    console.log("Game files are loading...");
+                } catch (error) {
+                    displayError("Error loading game files: " + error.message);
+                }
             },
             onrun: function (dosbox, app) {
                 // Manually start doom.exe after loading
