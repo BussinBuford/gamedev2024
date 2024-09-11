@@ -9,6 +9,8 @@
             width: 640px;
             height: 480px;
             border: 1px solid black;
+            background: #000; /* Add background color to make the container visible */
+            position: relative;
         }
         .error-log {
             margin-top: 20px;
@@ -17,13 +19,32 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        #fullscreenContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000; /* Fullscreen background */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
     <h1>Play DOOM in Browser</h1>
     
-    <!-- DOSBox container -->
-    <div id="dosbox" class="dosbox-container"></div>
+    <!-- Fullscreen container to handle resizing -->
+    <div id="fullscreenContainer">
+        <!-- DOSBox container -->
+        <div id="dosbox" class="dosbox-container"></div>
+    </div>
     
     <!-- Fullscreen button -->
     <button id="fullscreenBtn">Fullscreen</button>
@@ -40,15 +61,15 @@
     <script>
         // Fullscreen function
         document.getElementById('fullscreenBtn').addEventListener('click', function () {
-            const dosbox = document.getElementById('dosbox');
-            if (dosbox.requestFullscreen) {
-                dosbox.requestFullscreen();
-            } else if (dosbox.mozRequestFullScreen) { // Firefox
-                dosbox.mozRequestFullScreen();
-            } else if (dosbox.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                dosbox.webkitRequestFullscreen();
-            } else if (dosbox.msRequestFullscreen) { // IE/Edge
-                dosbox.msRequestFullscreen();
+            const fullscreenContainer = document.getElementById('fullscreenContainer');
+            if (fullscreenContainer.requestFullscreen) {
+                fullscreenContainer.requestFullscreen();
+            } else if (fullscreenContainer.mozRequestFullScreen) { // Firefox
+                fullscreenContainer.mozRequestFullScreen();
+            } else if (fullscreenContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                fullscreenContainer.webkitRequestFullscreen();
+            } else if (fullscreenContainer.msRequestFullscreen) { // IE/Edge
+                fullscreenContainer.msRequestFullscreen();
             }
         });
 
