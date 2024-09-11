@@ -9,7 +9,7 @@
             width: 640px;
             height: 480px;
             border: 1px solid black;
-            background: #000; /* Add background color to make the container visible */
+            background: #000;
             position: relative;
         }
         .error-log {
@@ -30,7 +30,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: #000; /* Fullscreen background */
+            background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -87,11 +87,19 @@
         const dosbox = new Dosbox({
             id: "dosbox",
             onload: function (dosbox) {
-                // Run the game from the ZIP file and mount it
                 console.log("DOSBox loaded, attempting to run DOOM...");
+                
+                // Add additional debugging information
+                dosbox.on('error', (error) => {
+                    displayError("DOSBox error: " + error.message);
+                });
+                dosbox.on('status', (status) => {
+                    console.log("DOSBox status: " + status);
+                });
+
+                // Run the game from the ZIP file and mount it
                 try {
                     dosbox.run("https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/DOOM/doom.zip", "./DOOM");
-                    console.log("Game files are loading...");
                 } catch (error) {
                     displayError("Error loading game files: " + error.message);
                 }
@@ -101,7 +109,6 @@
                 console.log("App '" + app + "' is running.");
                 try {
                     dosbox.sendCommand("doom.exe\n");
-                    console.log("Successfully sent 'doom.exe' command.");
                 } catch (error) {
                     displayError("Error running 'doom.exe': " + error.message);
                 }
