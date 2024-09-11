@@ -9,123 +9,69 @@
             width: 640px;
             height: 480px;
             border: 1px solid black;
-            background: #000;
-            position: relative;
-        }
-        .error-log {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        html, body {
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-        }
-        #fullscreenContainer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
     </style>
 </head>
 <body>
     <h1>Play DOOM in Browser</h1>
-    
-    <!-- Fullscreen container to handle resizing -->
-    <div id="fullscreenContainer">
-        <!-- DOSBox container -->
-        <div id="dosbox" class="dosbox-container"></div>
-    </div>
-    
-    <!-- Fullscreen button -->
-    <button id="fullscreenBtn">Fullscreen</button>
-
-    <!-- Error log section -->
-    <div id="errorLog" class="error-log" style="display: none;">
-        <h3>Error Log:</h3>
-        <ul id="errorMessages"></ul>
-    </div>
+    <div id="dosbox" class="dosbox-container"></div>
+    <button onclick="requestFullscreen();">Fullscreen</button>
 
     <!-- Load js-dos API -->
     <script src="https://js-dos.com/cdn/js-dos-api.js"></script>
 
     <script>
         // Fullscreen function
-        document.getElementById('fullscreenBtn').addEventListener('click', function () {
-            const fullscreenContainer = document.getElementById('fullscreenContainer');
-            if (fullscreenContainer.requestFullscreen) {
-                fullscreenContainer.requestFullscreen();
-            } else if (fullscreenContainer.mozRequestFullScreen) { // Firefox
-                fullscreenContainer.mozRequestFullScreen();
-            } else if (fullscreenContainer.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                fullscreenContainer.webkitRequestFullscreen();
-            } else if (fullscreenContainer.msRequestFullscreen) { // IE/Edge
-                fullscreenContainer.msRequestFullscreen();
+        function requestFullscreen() {
+            const dosbox = document.getElementById('dosbox');
+            if (dosbox.requestFullscreen) {
+                dosbox.requestFullscreen();
+            } else if (dosbox.mozRequestFullScreen) { // Firefox
+                dosbox.mozRequestFullScreen();
+            } else if (dosbox.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                dosbox.webkitRequestFullscreen();
+            } else if (dosbox.msRequestFullscreen) { // IE/Edge
+                dosbox.msRequestFullscreen();
             }
-        });
-
-        // Display errors in the Error Log section
-        function displayError(message) {
-            const errorLog = document.getElementById('errorLog');
-            const errorMessages = document.getElementById('errorMessages');
-            const errorItem = document.createElement('li');
-            errorItem.textContent = message;
-            errorMessages.appendChild(errorItem);
-            errorLog.style.display = 'block';
         }
 
         // Initialize Dosbox and set up the game
         const dosbox = new Dosbox({
             id: "dosbox",
             onload: function (dosbox) {
-                console.log("DOSBox loaded, attempting to run DOOM...");
-                
-                // Add additional debugging information
-                dosbox.on('error', (error) => {
-                    displayError("DOSBox error: " + error.message);
-                });
-                dosbox.on('status', (status) => {
-                    console.log("DOSBox status: " + status);
-                });
-
                 // Run the game from the ZIP file and mount it
-                try {
-                    dosbox.run("https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/DOOM/doom.zip", "./DOOM");
-                } catch (error) {
-                    displayError("Error loading game files: " + error.message);
-                }
+                console.log("DOSBox loaded, attempting to run DOOM...");
+                dosbox.run("https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/DOOM.zip", "./DOOM")
+                    .then(() => {
+                        console.log("Game files loaded successfully.");
+                    })
+                    .catch((error) => {
+                        console.error("Error loading game files:", error);
+                    });
             },
             onrun: function (dosbox, app) {
                 // Manually start doom.exe after loading
                 console.log("App '" + app + "' is running.");
                 try {
                     dosbox.sendCommand("doom.exe\n");
+                    console.log("Successfully sent 'doom.exe' command.");
                 } catch (error) {
-                    displayError("Error running 'doom.exe': " + error.message);
+                    console.error("Error running 'doom.exe':", error);
                 }
             },
             onerror: function (error) {
-                displayError("Error initializing Dosbox: " + error.message);
+                console.error("Error initializing Dosbox:", error);
             }
         });
 
         // Debugging: log exit status and error handling
         window.addEventListener("error", function (e) {
-            displayError("Unhandled error: " + e.message);
+            console.error("Unhandled error:", e.message);
         });
 
         // Handle specific exit status like exit(101)
         window.addEventListener("unhandledrejection", function (event) {
-            displayError("Unhandled promise rejection: " + event.reason);
+            console.error("Unhandled promise rejection:", event.reason);
         });
     </script>
 </body>
