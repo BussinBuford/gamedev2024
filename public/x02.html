@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack SPA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #2e8b57;
+            color: white;
+        }
+
+        #game {
+            margin: 20px auto;
+            width: 300px;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #betting-section, #game-section, #credits {
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 10px;
+            margin: 5px;
+            background-color: #555;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #777;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Main Menu Section -->
+        <div id="main-menu">
+            <h1>Blackjack</h1>
+            <button id="start-game">Start Game</button>
+        </div>
+
+        <!-- Game Section -->
+        <div id="game" style="display: none;">
+            <h1>Blackjack</h1>
+            <div id="credits">Credits: 100</div>
+
+            <div id="betting-section">
+                <input type="number" id="bet-amount" placeholder="Place your bet" min="1" value="10">
+                <button id="place-bet">Place Bet</button>
+            </div>
+
+            <div id="game-section" style="display: none;">
+                <div id="dealer-hand">
+                    <h2>Dealer's Hand</h2>
+                    <div id="dealer-cards"></div>
+                    <div id="dealer-score"></div>
+                </div>
+
+                <div id="player-hand">
+                    <h2>Your Hand</h2>
+                    <div id="player-cards"></div>
+                    <div id="player-score"></div>
+                </div>
+
+                <div id="controls">
+                    <button id="hit">Hit</button>
+                    <button id="stand">Stand</button>
+                </div>
+            </div>
+
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        let playerHand = [];
+        let dealerHand = [];
+        let credits = 100;
+        let currentBet = 0;
+        let deck = [];
+
+        const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+        const creditsDisplay = document.getElementById('credits');
+        const resultDisplay = document.getElementById('result');
+        const betInput = document.getElementById('bet-amount');
+        const placeBetButton = document.getElementById('place-bet');
+        const hitButton = document.getElementById('hit');
+        const standButton = document.getElementById('stand');
+        const playerCardsDiv = document.getElementById('player-cards');
+        const dealerCardsDiv = document.getElementById('dealer-cards');
+        const playerScoreDiv = document.getElementById('player-score');
+        const dealerScoreDiv = document.getElementById('dealer-score');
+        const gameSection = document.getElementById('game-section');
+        const startGameButton = document.getElementById('start-game');
+        const gameDiv = document.getElementById('game');
+        const mainMenuDiv = document.getElementById('main-menu');
+
+        // Event to start the game (Show game section and hide the main menu)
+        startGameButton.addEventListener('click', () => {
+            mainMenuDiv.style.display = 'none';
+            gameDiv.style.display = 'block';
+        });
+
+        // Initialize the game
+        placeBetButton.addEventListener('click', startGame);
+        hitButton.addEventListener('click', hit);
+        standButton.addEventListener('click', stand);
+
+        function startGame() {
+            currentBet = parseInt(betInput.value);
+
+            if (isNaN(currentBet) || currentBet <= 0 || currentBet > credits) {
+                alert('Please enter a valid bet amount.');
+                return;
+            }
+
+            credits -= currentBet;
+            updateCredits();
+
+            deck = createDeck();
+            shuffleDeck(deck);
+            playerHand = [drawCard(), drawCard()];
+            dealerHand = [drawCard(), drawCard()];
+
+            showHands();
+            checkBlackjack();
+
+            document.getElementById('betting-section').style.display = 'none';
+            gameSection.style.display = 'block';
+            resultDisplay.innerText = '';
+        }
+
+        function hit() {
+            playerHand.push(drawCard());
+            showHands();
+            
+            if (calculateScore(playerHand) > 21) {
+                endGame('Bust! You lost.');
+            }
+        }
+
+        function stand() {
+            while (calculateScore(dealerHand) < 17) {
+                dealerHand.push(drawCard());
+            }
+            showHands();
+            checkWinner();
+        }
+
+        function createDeck() {
+            let deck = [];
+            for (let suit of suits) {
+                for (let value of values) {
+                    deck.push({ suit, value });
+                }
+            }
+            return deck;
+        }
+
+        function shuffleDeck(deck) {
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        function drawCard() {
+            return deck.pop();
+        }
+
+        function calculateScore(hand) {
+            let score = 0;
+            let aceCount = 0;
+
+            hand.forEach(card => {
+                if (card.value === 'J' || card.value === 'Q' || card.value === 'K') {
+                    score += 10;
+                } else if (card.value === 'A') {
+                    aceCount += 1;
+                    score += 11;
+                } else {
+                    score += parseInt(card.value);
+                }
+            });
+
+            while (aceCount > 0 && score > 21) {
+                score -= 10;
+                aceCount -= 1;
+            }
+
+            return score;
+        }
+
+        function showHands() {
+            playerCardsDiv.innerHTML = playerHand.map(card => `${card.value} of ${card.suit}`).join(', ');
+            dealerCardsDiv.innerHTML = dealerHand.map(card => `${card.value} of ${card.suit}`).join(', ');
+            playerScoreDiv.innerText = `Score: ${calculateScore(playerHand)}`;
+            dealerScoreDiv.innerText = `Score: ${calculateScore(dealerHand)}`;
+        }
+
+        function checkBlackjack() {
+            if (calculateScore(playerHand) === 21) {
+                endGame('Blackjack! You win!');
+            } else if (calculateScore(dealerHand) === 21) {
+                endGame('Dealer has Blackjack! You lost.');
+            }
+        }
+
+        function checkWinner() {
+            const playerScore = calculateScore(playerHand);
+            const dealerScore = calculateScore(dealerHand);
+
+            if (dealerScore > 21) {
+                endGame('Dealer busts! You win!');
+            } else if (playerScore > dealerScore) {
+                endGame('You win!');
+            } else if (playerScore < dealerScore) {
+                endGame('You lost.');
+            } else {
+                endGame('It\'s a tie.');
+            }
+        }
+
+        function endGame(message) {
+            resultDisplay.innerText = message;
+            
+            if (message.includes('win')) {
+                credits += currentBet * 2;
+            }
+
+            updateCredits();
+            resetGame();
+        }
+
+        function resetGame() {
+            gameSection.style.display = 'none';
+            document.getElementById('betting-section').style.display = 'block';
+        }
+
+        function updateCredits() {
+            creditsDisplay.innerText = `Credits: ${credits}`;
+        }
+    </script>
+</body>
+</html>
