@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play Quake in Browser</title>
-    <script src="https://js-dos.com/6.22/js-dos.js"></script>
+    <!-- Use jsDelivr CDN to load js-dos -->
+    <script src="https://cdn.jsdelivr.net/npm/js-dos@6.22.24/dist/js-dos.js"></script>
     <style>
         body {
             display: flex;
@@ -26,8 +27,9 @@
     <script>
         Dos(document.getElementById("dos-game")).ready(function(fs) {
             fs.run("quake.zip").then(function(ci) {
-                // Start in fullscreen when the game loads
                 ci.runFullscreen();
+            }).catch(function (error) {
+                console.error("Error loading the game: ", error);
             });
         });
     </script>
