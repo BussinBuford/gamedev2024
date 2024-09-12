@@ -25,7 +25,10 @@
     <div id="dos-game"></div>
 
     <script>
-        Dos(document.getElementById("dos-game")).ready(function(fs) {
+        Dos(document.getElementById("dos-game"), {
+            // Set base URL for WebAssembly files
+            wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@6.22.24/dist/"
+        }).ready(function(fs) {
             fs.run("quake.zip").then(function(ci) {
                 ci.runFullscreen();
             }).catch(function (error) {
