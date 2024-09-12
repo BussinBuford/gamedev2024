@@ -22,14 +22,14 @@
 <body>
     <div id="dos-game"></div>
 
-    <!-- Load js-dos from jsDelivr CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/js-dos@6.22.24/dist/js-dos.js"></script>
+    <!-- Load js-dos from unpkg CDN -->
+    <script src="https://unpkg.com/js-dos@6.22.24/dist/js-dos.js"></script>
 
     <script>
-        // Make sure the Dos() function is called after js-dos.js is loaded
         window.addEventListener('load', function() {
             Dos(document.getElementById("dos-game"), {
-                wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@6.22.24/dist/"
+                // Use unpkg CDN for WASM files
+                wdosboxUrl: "https://unpkg.com/js-dos@6.22.24/dist/"
             }).ready(function(fs) {
                 fs.run("quake.zip").then(function(ci) {
                     ci.runFullscreen();
