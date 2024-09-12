@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play Quake in Browser</title>
-    <!-- Use jsDelivr CDN to load js-dos -->
-    <script src="https://cdn.jsdelivr.net/npm/js-dos@6.22.24/dist/js-dos.js"></script>
     <style>
         body {
             display: flex;
@@ -23,11 +21,10 @@
 </head>
 <body>
     <div id="dos-game"></div>
-
+    <script src="js-dos.js"></script>
     <script>
         Dos(document.getElementById("dos-game"), {
-            // Set base URL for WebAssembly files
-            wdosboxUrl: "https://cdn.jsdelivr.net/npm/js-dos@6.22.24/dist/"
+            wdosboxUrl: "./DOSBOX"  // Points to local files
         }).ready(function(fs) {
             fs.run("quake.zip").then(function(ci) {
                 ci.runFullscreen();
