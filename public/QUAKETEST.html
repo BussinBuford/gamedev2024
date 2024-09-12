@@ -22,18 +22,19 @@
 <body>
     <div id="dos-game"></div>
 
-    <!-- Load js-dos from your GitHub repository -->
-    <script src="https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/public/DOSBOX/js-dos.js"></script>
+    <!-- Load js-dos from local files -->
+    <script src="./js-dos.js"></script>
 
     <script>
-        Dos(document.getElementById("dos-game"), {
-            // Point to your hosted WASM files on GitHub
-            wdosboxUrl: "https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/public/DOSBOX/"
-        }).ready(function(fs) {
-            fs.run("quake.zip").then(function(ci) {
-                ci.runFullscreen();
-            }).catch(function (error) {
-                console.error("Error loading the game: ", error);
+        window.addEventListener('load', function() {
+            Dos(document.getElementById("dos-game"), {
+                wdosboxUrl: "./DOSBOX/"  // Point to the local directory
+            }).ready(function(fs) {
+                fs.run("quake.zip").then(function(ci) {
+                    ci.runFullscreen();
+                }).catch(function (error) {
+                    console.error("Error loading the game: ", error);
+                });
             });
         });
     </script>
