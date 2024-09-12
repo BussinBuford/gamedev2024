@@ -21,11 +21,16 @@
 </head>
 <body>
     <div id="dos-game"></div>
-    <script src="js-dos.js"></script>
+
+    <!-- Load js-dos from your GitHub repository -->
+    <script src="https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/public/DOSBOX/js-dos.js"></script>
+
     <script>
         Dos(document.getElementById("dos-game"), {
-            wdosboxUrl: "./DOSBOX"  // Points to local files
+            // Point to your hosted WASM files on GitHub
+            wdosboxUrl: "https://raw.githubusercontent.com/BussinBuford/gamedev2024/main/public/DOSBOX/"
         }).ready(function(fs) {
+            // No need for full path if quake.zip is in the same directory
             fs.run("quake.zip").then(function(ci) {
                 ci.runFullscreen();
             }).catch(function (error) {
