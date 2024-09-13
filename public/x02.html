@@ -157,7 +157,7 @@
             while (calculateScore(dealerHand) < 17) {
                 dealerHand.push(drawCard());
             }
-            showHands();
+            showHands(true);
             checkWinner();
         }
 
@@ -205,11 +205,22 @@
             return score;
         }
 
-        function showHands() {
+        function showHands(revealDealer = false) {
             playerCardsDiv.innerHTML = playerHand.map(card => `${card.value} of ${card.suit}`).join(', ');
-            dealerCardsDiv.innerHTML = dealerHand.map(card => `${card.value} of ${card.suit}`).join(', ');
+
+            // Only show one dealer card unless the game has ended or the player stands
+            if (!revealDealer) {
+                dealerCardsDiv.innerHTML = `${dealerHand[0].value} of ${dealerHand[0].suit}, [Hidden]`;
+            } else {
+                dealerCardsDiv.innerHTML = dealerHand.map(card => `${card.value} of ${card.suit}`).join(', ');
+            }
+
             playerScoreDiv.innerText = `Score: ${calculateScore(playerHand)}`;
-            dealerScoreDiv.innerText = `Score: ${calculateScore(dealerHand)}`;
+            if (revealDealer) {
+                dealerScoreDiv.innerText = `Score: ${calculateScore(dealerHand)}`;
+            } else {
+                dealerScoreDiv.innerText = `Score: ??`;
+            }
         }
 
         function checkBlackjack() {
@@ -231,15 +242,17 @@
             } else if (playerScore < dealerScore) {
                 endGame('You lost.');
             } else {
-                endGame('It\'s a tie.');
+                endGame('It\'s a tie.', true); // Add a flag to signal it's a tie
             }
         }
 
-        function endGame(message) {
+        function endGame(message, tie = false) {
             resultDisplay.innerText = message;
             
             if (message.includes('win')) {
                 credits += currentBet * 2;
+            } else if (tie) {
+                credits += currentBet; // Return the bet amount on a tie
             }
 
             updateCredits();
