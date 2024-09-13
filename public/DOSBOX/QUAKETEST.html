@@ -28,7 +28,7 @@
     <script>
         window.addEventListener('load', function() {
             Dos(document.getElementById("dos-game"), {
-                wdosboxUrl: "./DOSBOX/"  // Point to the local directory
+                wdosboxUrl: "./"  // Point to the local directory
             }).ready(function(fs) {
                 fs.run("quake.zip").then(function(ci) {
                     ci.runFullscreen();
