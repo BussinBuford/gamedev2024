@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hex to Text Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            font-size: 18px;
+        }
+        #output {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hex to Text Converter</h1>
+    <label for="hexInput">Enter Hexadecimal Values:</label>
+    <input type="text" id="hexInput" placeholder="e.g. 48656c6c6f">
+    <button onclick="convertHexToText()">Convert to Text</button>
+
+    <div id="output"></div>
+
+    <script>
+        function convertHexToText() {
+            let hexInput = document.getElementById("hexInput").value;
+            let output = document.getElementById("output");
+
+            // Ensure the input is valid hexadecimal
+            if (!/^[0-9a-fA-F]+$/.test(hexInput) || hexInput.length % 2 !== 0) {
+                output.innerHTML = "Please enter a valid hexadecimal string.";
+                return;
+            }
+
+            let text = '';
+            for (let i = 0; i < hexInput.length; i += 2) {
+                let hexPair = hexInput.substr(i, 2);
+                text += String.fromCharCode(parseInt(hexPair, 16));
+            }
+
+            output.innerHTML = "Converted Text: " + text;
+        }
+    </script>
+</body>
+</html>
