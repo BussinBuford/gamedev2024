@@ -34,11 +34,24 @@
     <label for="textInput">Enter Regular Text:</label>
     <textarea id="textInput" rows="3" cols="40" placeholder="Enter text to convert"></textarea><br>
     <button onclick="convertText()">Convert</button>
-
     <div id="conversionOutput"></div>
 
+    <!-- Binary to Text Section -->
+    <h2>Binary to Text Converter</h2>
+    <label for="binaryInput">Enter Binary Values:</label>
+    <textarea id="binaryInput" rows="3" cols="40" placeholder="e.g. 01001000 01100101"></textarea><br>
+    <button onclick="convertBinaryToText()">Convert to Text</button>
+    <div id="binaryOutput"></div>
+
+    <!-- Brainf**k to Text Section -->
+    <h2>Brainf**k to Text Converter</h2>
+    <label for="brainfuckInput">Enter Brainf**k Code:</label>
+    <textarea id="brainfuckInput" rows="3" cols="40" placeholder="e.g. +++++."></textarea><br>
+    <button onclick="convertBrainfuckToText()">Convert to Text</button>
+    <div id="brainfuckOutput"></div>
+
     <script>
-        // Function to convert Hex to Text
+        // Convert Hex to Text
         function convertHexToText() {
             let hexInput = document.getElementById("hexInput").value;
             let output = document.getElementById("hexOutput");
@@ -58,7 +71,7 @@
             output.innerHTML = "Converted Text: " + text;
         }
 
-        // Function to convert Text to Hex, Binary, and Brainf**k
+        // Convert Text to Hex, Binary, and Brainf**k
         function convertText() {
             let textInput = document.getElementById("textInput").value;
             let output = document.getElementById("conversionOutput");
@@ -80,13 +93,13 @@
                 binary += textInput.charCodeAt(i).toString(2).padStart(8, '0') + ' ';
             }
 
-            // Convert to Brainf**k (increment ASCII values)
+            // Convert to Brainf**k
             let brainf = '';
             for (let i = 0; i < textInput.length; i++) {
                 let asciiVal = textInput.charCodeAt(i);
                 brainf += '+'.repeat(asciiVal) + '.';
                 if (i < textInput.length - 1) {
-                    brainf += '>'; // Separate characters by moving to the next cell
+                    brainf += '>'; // Move to the next cell
                 }
             }
 
@@ -95,6 +108,77 @@
                 <p><strong>Binary:</strong> ${binary.trim()}</p>
                 <p><strong>Brainf**k:</strong> ${brainf}</p>
             `;
+        }
+
+        // Convert Binary to Text
+        function convertBinaryToText() {
+            let binaryInput = document.getElementById("binaryInput").value.trim();
+            let output = document.getElementById("binaryOutput");
+            let binaryArray = binaryInput.split(' ');
+
+            let text = '';
+            try {
+                binaryArray.forEach(binaryStr => {
+                    text += String.fromCharCode(parseInt(binaryStr, 2));
+                });
+                output.innerHTML = "Converted Text: " + text;
+            } catch {
+                output.innerHTML = "Please enter a valid binary string.";
+            }
+        }
+
+        // Convert Brainf**k to Text
+        function convertBrainfuckToText() {
+            let brainfuckInput = document.getElementById("brainfuckInput").value;
+            let output = document.getElementById("brainfuckOutput");
+            let tape = [0];
+            let pointer = 0;
+            let result = '';
+            let loops = [];
+            let i = 0;
+
+            while (i < brainfuckInput.length) {
+                switch (brainfuckInput[i]) {
+                    case '+':
+                        tape[pointer] = (tape[pointer] || 0) + 1;
+                        break;
+                    case '-':
+                        tape[pointer] = (tape[pointer] || 0) - 1;
+                        break;
+                    case '>':
+                        pointer++;
+                        if (!tape[pointer]) tape[pointer] = 0;
+                        break;
+                    case '<':
+                        pointer--;
+                        break;
+                    case '.':
+                        result += String.fromCharCode(tape[pointer]);
+                        break;
+                    case '[':
+                        if (tape[pointer] === 0) {
+                            let openBrackets = 1;
+                            while (openBrackets > 0) {
+                                i++;
+                                if (brainfuckInput[i] === '[') openBrackets++;
+                                if (brainfuckInput[i] === ']') openBrackets--;
+                            }
+                        } else {
+                            loops.push(i);
+                        }
+                        break;
+                    case ']':
+                        if (tape[pointer] !== 0) {
+                            i = loops[loops.length - 1];
+                        } else {
+                            loops.pop();
+                        }
+                        break;
+                }
+                i++;
+            }
+
+            output.innerHTML = "Converted Text: " + result;
         }
     </script>
 </body>
