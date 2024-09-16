@@ -151,6 +151,10 @@
             gameSection.style.display = 'block';
             resultDisplay.innerText = '';
             restartButton.style.display = 'none';
+
+            // Re-enable the Hit and Stand buttons if they were disabled
+            hitButton.disabled = false;
+            standButton.disabled = false;
         }
 
         function hit() {
@@ -163,6 +167,7 @@
         }
 
         function stand() {
+            // Dealer hits to 16 and stands on 17
             while (calculateScore(dealerHand) < 17) {
                 dealerHand.push(drawCard());
             }
@@ -266,6 +271,10 @@
 
             updateCredits();
             restartButton.style.display = 'block'; // Show "Play Again" button after game ends
+
+            // Disable Hit and Stand buttons
+            hitButton.disabled = true;
+            standButton.disabled = true;
         }
 
         function resetGame() {
