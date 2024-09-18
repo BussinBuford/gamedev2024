@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplified Diep.io</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+
+        canvas {
+            display: block;
+            background-color: #87CEEB;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+<div id="score">Score: 0</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const keys = {
+        ArrowUp: false,
+        ArrowDown: false,
+        ArrowLeft: false,
+        ArrowRight: false
+    };
+
+    let player = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 30,
+        speed: 5,
+        bullets: []
+    };
+
+    let enemies = [];
+    let score = 0;
+
+    window.addEventListener('keydown', (e) => {
+        if (e.code in keys) keys[e.code] = true;
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (e.code in keys) keys[e.code] = false;
+    });
+
+    window.addEventListener('click', (e) => {
+        shootBullet(e.clientX, e.clientY);
+    });
+
+    function shootBullet(targetX, targetY) {
+        const angle = Math.atan2(targetY - player.y, targetX - player.x);
+        const bullet = {
+            x: player.x,
+            y: player.y,
+            size: 10,
+            speed: 8,
+            dx: Math.cos(angle) * 8,
+            dy: Math.sin(angle) * 8
+        };
+        player.bullets.push(bullet);
+    }
+
+    function spawnEnemy() {
+        const size = 30;
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const speed = Math.random() * 2 + 1;
+        enemies.push({ x, y, size, speed });
+    }
+
+    function drawPlayer() {
+        ctx.fillStyle = 'green';
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    function drawEnemies() {
+        ctx.fillStyle = 'red';
+        enemies.forEach((enemy) => {
+            ctx.beginPath();
+            ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+
+    function drawBullets() {
+        ctx.fillStyle = 'black';
+        player.bullets.forEach((bullet) => {
+            ctx.beginPath();
+            ctx.arc(bullet.x, bullet.y, bullet.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+
+    function updatePlayer() {
+        if (keys.ArrowUp && player.y > player.size) player.y -= player.speed;
+        if (keys.ArrowDown && player.y < canvas.height - player.size) player.y += player.speed;
+        if (keys.ArrowLeft && player.x > player.size) player.x -= player.speed;
+        if (keys.ArrowRight && player.x < canvas.width - player.size) player.x += player.speed;
+    }
+
+    function updateBullets() {
+        player.bullets.forEach((bullet, index) => {
+            bullet.x += bullet.dx;
+            bullet.y += bullet.dy;
+            if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) {
+                player.bullets.splice(index, 1);
+            }
+        });
+    }
+
+    function updateEnemies() {
+        enemies.forEach((enemy) => {
+            const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+            enemy.x += Math.cos(angle) * enemy.speed;
+            enemy.y += Math.sin(angle) * enemy.speed;
+        });
+    }
+
+    function detectCollisions() {
+        enemies.forEach((enemy, enemyIndex) => {
+            player.bullets.forEach((bullet, bulletIndex) => {
+                const dist = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);
+                if (dist < enemy.size + bullet.size) {
+                    enemies.splice(enemyIndex, 1);
+                    player.bullets.splice(bulletIndex, 1);
+                    score += 1;
+                    document.getElementById('score').textContent = `Score: ${score}`;
+                }
+            });
+        });
+    }
+
+    function gameLoop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawPlayer();
+        drawEnemies();
+        drawBullets();
+
+        updatePlayer();
+        updateBullets();
+        updateEnemies();
+        detectCollisions();
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    setInterval(spawnEnemy, 2000);
+
+    gameLoop();
+</script>
+
+</body>
+</html>
