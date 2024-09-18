@@ -3,18 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simplified Diep.io</title>
+    <title>Diep.io - Advanced Singleplayer</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #f0f0f0;
+            background-color: #282c34;
         }
 
         canvas {
             display: block;
-            background-color: #87CEEB;
+            background-color: #20232a;
+        }
+
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            display: none;
+        }
+
+        #game-over h1 {
+            font-size: 48px;
+            margin: 0;
+        }
+
+        #game-over p {
+            font-size: 24px;
+        }
+
+        #game-over button {
+            padding: 10px 20px;
+            font-size: 20px;
+            margin-top: 20px;
+            cursor: pointer;
         }
 
         #score {
@@ -22,14 +49,19 @@
             top: 10px;
             left: 10px;
             font-family: Arial, sans-serif;
-            font-size: 24px;
-            color: black;
+            font-size: 20px;
+            color: white;
         }
     </style>
 </head>
 <body>
 
 <canvas id="gameCanvas"></canvas>
+<div id="game-over">
+    <h1>Game Over</h1>
+    <p>Your Score: <span id="final-score">0</span></p>
+    <button onclick="restartGame()">Restart</button>
+</div>
 <div id="score">Score: 0</div>
 
 <script>
@@ -39,138 +71,238 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const keys = {
-        ArrowUp: false,
-        ArrowDown: false,
-        ArrowLeft: false,
-        ArrowRight: false
-    };
-
-    let player = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-        size: 30,
-        speed: 5,
-        bullets: []
-    };
-
+    const keys = {};
+    let player = null;
     let enemies = [];
+    let particles = [];
     let score = 0;
+    let level = 1;
+    let gameOver = false;
 
-    window.addEventListener('keydown', (e) => {
-        if (e.code in keys) keys[e.code] = true;
-    });
+    const upgrades = {
+        speed: 5,
+        bulletSpeed: 10,
+        bulletSize: 10,
+        fireRate: 500,
+        health: 100
+    };
 
-    window.addEventListener('keyup', (e) => {
-        if (e.code in keys) keys[e.code] = false;
-    });
+    const colors = {
+        player: '#4CAF50',
+        enemy: '#F44336',
+        bullet: '#000',
+        particle: '#FFD700'
+    };
+
+    window.addEventListener('keydown', (e) => keys[e.code] = true);
+    window.addEventListener('keyup', (e) => keys[e.code] = false);
+
+    function restartGame() {
+        document.getElementById('game-over').style.display = 'none';
+        score = 0;
+        level = 1;
+        player = createPlayer();
+        enemies = [];
+        particles = [];
+        gameOver = false;
+        gameLoop();
+    }
+
+    function createPlayer() {
+        return {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 30,
+            speed: upgrades.speed,
+            bullets: [],
+            lastShot: 0,
+            health: upgrades.health,
+            maxHealth: upgrades.health
+        };
+    }
+
+    function createEnemy() {
+        const size = Math.random() * 40 + 20;
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const speed = Math.random() * 2 + 1 + level * 0.2;
+        const health = size * 2;
+        enemies.push({ x, y, size, speed, health, maxHealth: health });
+    }
+
+    function createParticles(x, y, color) {
+        for (let i = 0; i < 10; i++) {
+            particles.push({
+                x, y,
+                size: Math.random() * 5 + 2,
+                dx: Math.random() * 4 - 2,
+                dy: Math.random() * 4 - 2,
+                life: 100,
+                color
+            });
+        }
+    }
+
+    function shootBullet(targetX, targetY) {
+        const now = Date.now();
+        if (now - player.lastShot > upgrades.fireRate) {
+            const angle = Math.atan2(targetY - player.y, targetX - player.x);
+            player.bullets.push({
+                x: player.x,
+                y: player.y,
+                dx: Math.cos(angle) * upgrades.bulletSpeed,
+                dy: Math.sin(angle) * upgrades.bulletSpeed,
+                size: upgrades.bulletSize
+            });
+            player.lastShot = now;
+        }
+    }
 
     window.addEventListener('click', (e) => {
         shootBullet(e.clientX, e.clientY);
     });
 
-    function shootBullet(targetX, targetY) {
-        const angle = Math.atan2(targetY - player.y, targetX - player.x);
-        const bullet = {
-            x: player.x,
-            y: player.y,
-            size: 10,
-            speed: 8,
-            dx: Math.cos(angle) * 8,
-            dy: Math.sin(angle) * 8
-        };
-        player.bullets.push(bullet);
-    }
-
-    function spawnEnemy() {
-        const size = 30;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const speed = Math.random() * 2 + 1;
-        enemies.push({ x, y, size, speed });
-    }
-
     function drawPlayer() {
-        ctx.fillStyle = 'green';
+        ctx.fillStyle = colors.player;
         ctx.beginPath();
         ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
         ctx.fill();
+
+        // Health Bar
+        ctx.fillStyle = 'red';
+        ctx.fillRect(player.x - player.size, player.y - player.size - 10, player.size * 2, 5);
+        ctx.fillStyle = 'green';
+        ctx.fillRect(player.x - player.size, player.y - player.size - 10, (player.size * 2) * (player.health / player.maxHealth), 5);
     }
 
     function drawEnemies() {
-        ctx.fillStyle = 'red';
-        enemies.forEach((enemy) => {
+        enemies.forEach(enemy => {
+            ctx.fillStyle = colors.enemy;
             ctx.beginPath();
             ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
             ctx.fill();
+
+            // Health Bar
+            ctx.fillStyle = 'red';
+            ctx.fillRect(enemy.x - enemy.size, enemy.y - enemy.size - 10, enemy.size * 2, 5);
+            ctx.fillStyle = 'green';
+            ctx.fillRect(enemy.x - enemy.size, enemy.y - enemy.size - 10, (enemy.size * 2) * (enemy.health / enemy.maxHealth), 5);
         });
     }
 
     function drawBullets() {
-        ctx.fillStyle = 'black';
-        player.bullets.forEach((bullet) => {
+        ctx.fillStyle = colors.bullet;
+        player.bullets.forEach((bullet, index) => {
             ctx.beginPath();
             ctx.arc(bullet.x, bullet.y, bullet.size, 0, Math.PI * 2);
             ctx.fill();
-        });
-    }
 
-    function updatePlayer() {
-        if (keys.ArrowUp && player.y > player.size) player.y -= player.speed;
-        if (keys.ArrowDown && player.y < canvas.height - player.size) player.y += player.speed;
-        if (keys.ArrowLeft && player.x > player.size) player.x -= player.speed;
-        if (keys.ArrowRight && player.x < canvas.width - player.size) player.x += player.speed;
-    }
-
-    function updateBullets() {
-        player.bullets.forEach((bullet, index) => {
             bullet.x += bullet.dx;
             bullet.y += bullet.dy;
+
             if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) {
                 player.bullets.splice(index, 1);
             }
         });
     }
 
-    function updateEnemies() {
-        enemies.forEach((enemy) => {
-            const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
-            enemy.x += Math.cos(angle) * enemy.speed;
-            enemy.y += Math.sin(angle) * enemy.speed;
+    function drawParticles() {
+        particles.forEach((particle, index) => {
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            particle.x += particle.dx;
+            particle.y += particle.dy;
+            particle.life--;
+
+            if (particle.life <= 0) {
+                particles.splice(index, 1);
+            }
         });
     }
 
-    function detectCollisions() {
+    function updateEnemies() {
         enemies.forEach((enemy, enemyIndex) => {
+            const angle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+            enemy.x += Math.cos(angle) * enemy.speed;
+            enemy.y += Math.sin(angle) * enemy.speed;
+
+            // Check for collision with player
+            const distToPlayer = Math.hypot(player.x - enemy.x, player.y - enemy.y);
+            if (distToPlayer < enemy.size + player.size) {
+                player.health -= enemy.size / 2;
+                enemies.splice(enemyIndex, 1);
+                createParticles(enemy.x, enemy.y, colors.enemy);
+            }
+
+            // Check for bullet collisions
             player.bullets.forEach((bullet, bulletIndex) => {
-                const dist = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);
-                if (dist < enemy.size + bullet.size) {
-                    enemies.splice(enemyIndex, 1);
+                const distToBullet = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);
+                if (distToBullet < bullet.size + enemy.size) {
+                    enemy.health -= upgrades.bulletSize;
                     player.bullets.splice(bulletIndex, 1);
-                    score += 1;
-                    document.getElementById('score').textContent = `Score: ${score}`;
+                    if (enemy.health <= 0) {
+                        enemies.splice(enemyIndex, 1);
+                        createParticles(enemy.x, enemy.y, colors.enemy);
+                        score += Math.floor(enemy.size);
+                        if (score % 10 === 0) levelUp();
+                    }
                 }
             });
         });
     }
 
+    function levelUp() {
+        level++;
+        upgrades.bulletSpeed += 0.5;
+        upgrades.bulletSize += 0.5;
+        upgrades.speed += 0.2;
+    }
+
+    function updatePlayer() {
+        if (keys['ArrowUp'] && player.y > player.size) player.y -= player.speed;
+        if (keys['ArrowDown'] && player.y < canvas.height - player.size) player.y += player.speed;
+        if (keys['ArrowLeft'] && player.x > player.size) player.x -= player.speed;
+        if (keys['ArrowRight'] && player.x < canvas.width - player.size) player.x += player.speed;
+
+        if (player.health <= 0) endGame();
+    }
+
+    function endGame() {
+        gameOver = true;
+        document.getElementById('final-score').textContent = score;
+        document.getElementById('game-over').style.display = 'block';
+    }
+
     function gameLoop() {
+        if (gameOver) return;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         drawPlayer();
         drawEnemies();
         drawBullets();
+        drawParticles();
 
         updatePlayer();
-        updateBullets();
         updateEnemies();
-        detectCollisions();
+
+        document.getElementById('score').textContent = `Score: ${score}`;
 
         requestAnimationFrame(gameLoop);
     }
 
-    setInterval(spawnEnemy, 2000);
+    function spawnEnemies() {
+        if (gameOver) return;
+        createEnemy();
+        setTimeout(spawnEnemies, 2000 - (level * 100));
+    }
 
+    // Start Game
+    player = createPlayer();
+    spawnEnemies();
     gameLoop();
 </script>
 
