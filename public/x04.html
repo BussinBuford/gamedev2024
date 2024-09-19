@@ -15,17 +15,15 @@
     }
     #grid {
       display: grid;
-      grid-template-columns: repeat(10, 40px);
-      grid-template-rows: repeat(10, 40px);
       gap: 2px;
     }
     .cell {
-      width: 40px;
-      height: 40px;
+      width: 20px;
+      height: 20px;
       background-color: #ddd;
       border: 1px solid #999;
-      font-size: 18px;
-      line-height: 40px;
+      font-size: 12px;
+      line-height: 20px;
       text-align: center;
       cursor: pointer;
       user-select: none;
@@ -62,22 +60,23 @@
     <button onclick="resetGame()">Reset Game</button>
     <label for="difficulty">Difficulty:</label>
     <select id="difficulty" onchange="resetGame()">
-      <option value="easy">Easy (10 mines)</option>
-      <option value="medium" selected>Medium (20 mines)</option>
-      <option value="hard">Hard (30 mines)</option>
+      <option value="easy">Easy (72 mines)</option>
+      <option value="medium" selected>Medium (180 mines)</option>
+      <option value="hard">Hard (360 mines)</option>
     </select>
   </div>
 
   <script>
     const gridElement = document.getElementById('grid');
     const statusElement = document.getElementById('status');
-    let gridSize = 10;
+    let gridSize;
     let mineCount;
     let cells;
     let mines;
     let flags;
     let revealedCells;
     let gameOver = false;
+    let firstClick = true;
 
     function createGrid() {
       gridElement.innerHTML = '';
@@ -100,26 +99,27 @@
     function setGridSize() {
       const difficulty = document.getElementById('difficulty').value;
       if (difficulty === 'easy') {
-        gridSize = 8;
-        mineCount = 10;
+        gridSize = 24;
+        mineCount = 72;
       } else if (difficulty === 'medium') {
-        gridSize = 10;
-        mineCount = 20;
+        gridSize = 30;
+        mineCount = 180;
       } else if (difficulty === 'hard') {
-        gridSize = 12;
-        mineCount = 30;
+        gridSize = 36;
+        mineCount = 360;
       }
-      gridElement.style.gridTemplateColumns = `repeat(${gridSize}, 40px)`;
-      gridElement.style.gridTemplateRows = `repeat(${gridSize}, 40px)`;
+      gridElement.style.gridTemplateColumns = `repeat(${gridSize}, 20px)`;
+      gridElement.style.gridTemplateRows = `repeat(${gridSize}, 20px)`;
     }
 
-    function generateMines() {
+    function generateMines(excludeRow, excludeCol) {
       mines = [];
       while (mines.length < mineCount) {
         const row = Math.floor(Math.random() * gridSize);
         const col = Math.floor(Math.random() * gridSize);
         const mine = `${row},${col}`;
-        if (!mines.includes(mine)) {
+        // Exclude the first click position and its neighbors
+        if (!mines.includes(mine) && !(Math.abs(row - excludeRow) <= 1 && Math.abs(col - excludeCol) <= 1)) {
           mines.push(mine);
         }
       }
@@ -132,7 +132,15 @@
       const col = cell.dataset.col;
       if (cell.classList.contains('revealed') || cell.classList.contains('flag')) return;
 
-      revealCell(row, col);
+      // Generate mines after the first click and ensure the first click is not on a mine
+      if (firstClick) {
+        firstClick = false;
+        generateMines(row, col);
+        revealCell(row, col);
+      } else {
+        revealCell(row, col);
+      }
+
       checkGameOver();
     }
 
@@ -225,12 +233,12 @@
 
     function resetGame() {
       gameOver = false;
+      firstClick = true;
       revealedCells = 0;
       flags = 0;
       statusElement.innerText = 'Good luck!';
       setGridSize();
       createGrid();
-      generateMines();
     }
 
     resetGame();
