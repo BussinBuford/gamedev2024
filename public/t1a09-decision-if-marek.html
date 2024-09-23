@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <h1 align=center>t1a09 decisions</h1>
 
 Input:<input type=text id="myText1" value="Fred">
@@ -21,3 +27,88 @@ Input:<input type=number id="myNum1" value="14">
     document.getElementById('myDiv01').innerHTML = 'Was expecting Fred... :('
   }
   }"><br>
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Make a Decision</h1>
+    <div class="button-container">
+        <button onclick="decision1()">Button 1</button>
+        <button onclick="decision2()">Button 2</button>
+        <button onclick="decision3()">Button 3</button>
+        <button onclick="decision4()">Button 4</button>
+        <button onclick="decision5()">Button 5</button>
+        <button onclick="decision6()">Button 6</button>
+        <button onclick="decision7()">Button 7</button>
+        <button onclick="decision8()">Button 8</button>
+    </div>
+
+    <script>
+        function decision1() {
+            let userInput = prompt("Enter something for Button 1:");
+            alert("You entered: " + userInput);
+        }
+
+        function decision2() {
+            let confirmDecision = confirm("Are you sure you want to proceed with Button 2?");
+            if (confirmDecision) {
+                alert("You chose to proceed!");
+            } else {
+                alert("You canceled.");
+            }
+        }
+
+        function decision3() {
+            alert("Button 3 clicked. Here's a random number: " + Math.floor(Math.random() * 100));
+        }
+
+        function decision4() {
+            let color = prompt("Choose a background color (e.g., red, blue, yellow):");
+            document.body.style.backgroundColor = color;
+        }
+
+        function decision5() {
+            let result = Math.sqrt(144);
+            alert("The square root of 144 is: " + result);
+        }
+
+        function decision6() {
+            let userName = prompt("Enter your name:");
+            document.body.innerHTML += `<h2>Hello, ${userName}!</h2>`;
+        }
+
+        function decision7() {
+            window.location.href = "https://www.example.com";
+        }
+
+        function decision8() {
+            let randomBool = Math.random() > 0.5;
+            if (randomBool) {
+                alert("You got lucky!");
+            } else {
+                alert("Better luck next time.");
+            }
+        }
+    </script>
+</body>
+</html>
