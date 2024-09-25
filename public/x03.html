@@ -97,7 +97,8 @@
         bulletSize: 12, // Increased bullet size for more damage
         fireRate: 400,  // Reduced fire rate for faster shooting
         health: 100,
-        bulletDamage: 20  // Increased bullet damage
+        bulletDamage: 20,  // Increased bullet damage
+        safeZone: 150 // No-spawn zone radius around the player
     };
 
     const colors = {
@@ -137,11 +138,17 @@
     }
 
     function createEnemy() {
-        const size = Math.random() * 30 + 20; // Reduce enemy size range
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const speed = Math.random() * 1.5 + 0.5 + level * 0.1; // Reduce enemy speed
-        const health = size * 1.5; // Scale enemy health slightly lower
+        const size = Math.random() * 30 + 20;
+        let x, y;
+
+        // Ensure enemy doesn't spawn within the safe zone around the player
+        do {
+            x = Math.random() * canvas.width;
+            y = Math.random() * canvas.height;
+        } while (Math.hypot(player.x - x, player.y - y) < upgrades.safeZone);
+
+        const speed = Math.random() * 1.5 + 0.5 + level * 0.1;
+        const health = size * 1.5;
         enemies.push({ x, y, size, speed, health, maxHealth: health });
     }
 
@@ -274,8 +281,9 @@
         level++;
         upgrades.bulletSpeed += 0.5;
         upgrades.bulletSize += 0.5;
-        upgrades.bulletDamage += 5; // Increase bullet damage with level
+        upgrades.bulletDamage += 5;
         upgrades.speed += 0.2;
+        upgrades.fireRate = Math.max(100, upgrades.fireRate - 50);  // Reduce fire rate (faster shooting)
         document.getElementById('upgrade-message').style.display = 'block';
         setTimeout(() => {
             document.getElementById('upgrade-message').style.display = 'none';
@@ -318,7 +326,7 @@
     function spawnEnemies() {
         if (gameOver) return;
         createEnemy();
-        enemySpawnInterval = setTimeout(spawnEnemies, Math.max(1500 - (level * 100), 500)); // Slow enemy spawn initially
+        enemySpawnInterval = setTimeout(spawnEnemies, Math.max(1500 - (level * 100), 500));  // Slow enemy spawn initially
     }
 
     // Start Game
