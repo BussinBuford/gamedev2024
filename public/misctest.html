@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch JSON Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        #data-container {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON Data Viewer</h1>
+    <button onclick="fetchData()">Fetch JSON Data</button>
+    <div id="data-container">
+        <!-- JSON data will be displayed here -->
+    </div>
+
+    <script>
+        // Function to fetch JSON data and display it
+        function fetchData() {
+            const url = 'https://jsonplaceholder.typicode.com/posts'; // Replace with your JSON endpoint
+
+            fetch(url)
+                .then(response => response.json()) // Parse the JSON response
+                .then(data => {
+                    console.log(data); // Display in the console
+                    const container = document.getElementById('data-container');
+
+                    // Clear the container first
+                    container.innerHTML = '';
+
+                    // Display each item in the JSON
+                    data.forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.style.marginBottom = '10px';
+                        itemDiv.innerHTML = `<strong>ID:</strong> ${item.id} <br> <strong>Title:</strong> ${item.title} <br> <strong>Body:</strong> ${item.body}`;
+                        container.appendChild(itemDiv);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+    </script>
+</body>
+</html>
