@@ -4,6 +4,16 @@
   function myShowJSON(){
     document.getElementByID('myDiv1').innerHTML = 'Sent: ${myIn} '
   }
+
+  async function fetchData() {
+    const response = await fetch('https://dog.ceo/api/breeds/image/random');
+    const data = await response.json();
+    console.log(data);
+    console.log(`data.status: ${data.status}`)
+
+    const myJson = await JSON.stringify(data, null, 2);
+    document.getElementById('myDiv1').innerHTML = myJson
+  }
   
 </script>
 
