@@ -1,12 +1,13 @@
 <h1 align=center>t1a11 arrays</h1>
 
 <script>
-  // set a few global variables
+  // Set a few global variables
   let myMax = 6;
-  let myArray = new Array(myMax);
+  let myArray = new Array(myMax); // Initialize array with 6 undefined slots
 </script>
 
-Input:<input type=text id="myFirstName" value="fred"><br>
+<!-- Existing input textbox -->
+Input: <input type=text id="myFirstName" value="fred"><br>
 
 <!-- Button to set array values manually -->
 <input type=button value="Set Array" onclick="{
@@ -14,38 +15,42 @@ Input:<input type=text id="myFirstName" value="fred"><br>
   myArray[1] = 'Mary';
   myArray[2] = 'Peter';
 
-  document.getElementById('myDiv01').innerHTML = 'You set the array';
+  document.getElementById('myDiv01').innerHTML = 'You set the array with 3 values.';
 }">
 
 <!-- Button to show array values -->
 <input type=button value="Show Array" onclick="{
-  document.getElementById('myDiv01').innerHTML = '';
-  for (let myLoop = 0; myLoop < myArray.length; myLoop++){
+  document.getElementById('myDiv01').innerHTML = ''; // Clear previous output
+  let output = '';
+  for (let myLoop = 0; myLoop < myArray.length; myLoop++) {
     if (myArray[myLoop] !== undefined) {
-      document.getElementById('myDiv01').innerHTML += 'myArray[' + myLoop + '] = ' +
-        myArray[myLoop] + '<br>';
+      output += 'myArray[' + myLoop + '] = ' + myArray[myLoop] + '<br>';
     }
   }
+  if (output === '') {
+    output = 'Array is empty or has no defined values.';
+  }
+  document.getElementById('myDiv01').innerHTML = output;
 }"><br>
 
-<!-- New Input Textbox and Button to add text to the array -->
-<input type=text id="newText" placeholder="Enter text to add"><br>
+<!-- New input textbox for dynamically adding text -->
+New Input: <input type=text id="newText" placeholder="Enter text to add"><br>
 
 <!-- Button to add text to the array -->
 <input type=button value="Add Text to Array" onclick="{
   const textValue = document.getElementById('newText').value;
   if (textValue.trim() !== '') {
-    // Find first empty spot in the array or push to the end
-    const emptyIndex = myArray.indexOf(undefined);
+    // Find first empty or undefined spot in the array or push to the end
+    let emptyIndex = myArray.indexOf(undefined);
     if (emptyIndex !== -1) {
-      myArray[emptyIndex] = textValue.trim();
+      myArray[emptyIndex] = textValue.trim(); // Insert into the first empty slot
     } else {
-      myArray.push(textValue.trim());
+      myArray.push(textValue.trim()); // Push to the end if no empty slots
     }
     document.getElementById('myDiv01').innerHTML = 'Added to array: ' + textValue;
     document.getElementById('newText').value = ''; // Clear the input box
   } else {
-    document.getElementById('myDiv01').innerHTML = 'Please enter some text';
+    document.getElementById('myDiv01').innerHTML = 'Please enter some text before adding.';
   }
 }"><br>
 
