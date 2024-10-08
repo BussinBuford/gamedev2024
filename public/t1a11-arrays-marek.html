@@ -1,26 +1,49 @@
 <h1 align=center>t1a11 arrays</h1>
 
 <script>
-  // set a few global variable
-  let myMax = 6
-  let myArray = new Array(myMax)
+  // set a few global variables
+  let myMax = 6;
+  let myArray = new Array(myMax);
 </script>
 
 Input:<input type=text id="myFirstName" value="fred"><br>
 
+<!-- Button to set array values manually -->
 <input type=button value="Set Array" onclick="{
-  myArray[0] = 'Fred'
-  myArray[1] = 'Mary'
-  myArray[2] = 'Peter'
+  myArray[0] = 'Fred';
+  myArray[1] = 'Mary';
+  myArray[2] = 'Peter';
 
-  document.getElementById('myDiv01').innerHTML = 'You set the array'
+  document.getElementById('myDiv01').innerHTML = 'You set the array';
 }">
 
+<!-- Button to show array values -->
 <input type=button value="Show Array" onclick="{
-  document.getElementById('myDiv01').innerHTML = ''
-  for (myLoop=0; myLoop < 3; myLoop++){
+  document.getElementById('myDiv01').innerHTML = '';
+  for (let myLoop = 0; myLoop < 3; myLoop++){
     document.getElementById('myDiv01').innerHTML += 'myArray[' + myLoop + '] = ' +
-      myArray[myLoop] + '<br>'
+      myArray[myLoop] + '<br>';
+  }
+}"><br>
+
+<!-- New Input Textbox and Button to add text to the array -->
+<input type=text id="newText" placeholder="Enter text to add"><br>
+
+<!-- Button to add text to the array -->
+<input type=button value="Add Text to Array" onclick="{
+  const textValue = document.getElementById('newText').value;
+  if (textValue.trim() !== '') {
+    // Find first empty spot in the array or push to the end
+    const emptyIndex = myArray.indexOf(undefined);
+    if (emptyIndex !== -1) {
+      myArray[emptyIndex] = textValue.trim();
+    } else {
+      myArray.push(textValue.trim());
+    }
+    document.getElementById('myDiv01').innerHTML = 'Added to array: ' + textValue;
+    document.getElementById('newText').value = ''; // Clear the input box
+  } else {
+    document.getElementById('myDiv01').innerHTML = 'Please enter some text';
   }
 }"><br>
 
