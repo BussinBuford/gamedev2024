@@ -9,9 +9,15 @@
     const myUrl = document.getElementById('myText1').value
     const response = await fetch(myUrl);
     const data = await response.json();
-    console.log(data)
     const myJson = await JSON.stringify(data, null, 2);
-    document.getElementById('MyDiv1').innerHTML = myJson
+    document.getElementById('MyDiv1').innerHTML = `<pre>${myJson}</pre>`
+    
+    const imageUrl = typeof data === 'object' && (data.url || data.message || data.image);
+    if (imageUrl && /\.(jpg|jpeg|png|gif)$/i.test(imageUrl)) {
+      document.getElementById('MyImage').innerHTML = `<img src="${imageUrl}" style="max-width:300px">`
+    } else {
+      document.getElementById('MyImage').innerHTML = ''
+    }
   }
 </script>
 
@@ -30,6 +36,9 @@ Explanation of JSON compared to javascript objects in this textarea.<br>
 <option value="https://api.chucknorris.io/jokes/random">chucknorris
 </select><br><br>
 
-you make the JSON show up in the DIV<br><br>
+You make the JSON show up in the DIV<br><br>
 
-<div id="MyDiv1">...</div>
+<div style="display:flex;justify-content:space-between">
+  <div id="MyDiv1" style="width:45%">...</div>
+  <div id="MyImage" style="width:45%"></div>
+</div>
