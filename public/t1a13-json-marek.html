@@ -9,6 +9,7 @@
     const myUrl = document.getElementById('myText1').value
     const response = await fetch(myUrl);
     const data = await response.json();
+    console.log(data)
     const myJson = await JSON.stringify(data, null, 2);
     document.getElementById('MyDiv1').innerHTML = myJson
   }
