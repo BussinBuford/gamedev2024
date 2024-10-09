@@ -1,45 +1,34 @@
 <h1 align=center>t1a13 JSON</h1>
 
 <script>
-  function myShowJSON(myUrl) {
-    // Set the textbox value to the selected dropdown value
-    document.getElementById('myText1').value = myUrl;
+  function myShowJSON(link){
+    document.getElementById('myText1').value = link
   }
 
   async function fetchData() {
-    // Get the URL from the textbox
-    const myUrl = document.getElementById('myText1').value;
-
-    try {
-      // Fetch data from the URL
-      const response = await fetch(myUrl);
-      const data = await response.json();
-      
-      // Format the JSON and display it in the div
-      const myJson = JSON.stringify(data, null, 2);
-      document.getElementById('myDiv1').innerText = myJson;
-    } catch (error) {
-      // Handle errors, such as invalid URL or network issues
-      document.getElementById('myDiv1').innerText = 'Failed to fetch JSON. Check the URL or network connection.';
-      console.error(error);
-    }
+    const myUrl = document.getElementById('myText1').value
+    const response = await fetch(myUrl);
+    const data = await response.json();
+    const myJson = await JSON.stringify(data, null, 2);
+    document.getElementById('MyDiv1').innerHTML = myJson
   }
 </script>
 
-Explanation of JSON compared to JavaScript objects in this textarea.<br>
-<textarea cols=70 rows=5></textarea><br><br>
+Explanation of JSON compared to javascript objects in this textarea.<br>
 
-<!-- Textbox to show the selected URL -->
+<textarea cols=70 ROWS=5>
+  
+</textarea><br><br>
+
 <input type=text id="myText1" value="https://randomfox.ca/floof/">
-<!-- Button to fetch and display JSON data -->
-<input type=button value="Show JSON" onclick="fetchData()"><br><br>
+<input type=button value="show JSON" onclick="fetchData()"><br><br>
 
-<!-- Dropdown to select URLs and update the textbox -->
 <select size=1 onchange="myShowJSON(this.value)">
-  <option value="https://randomfox.ca/floof/">randomfox</option>
-  <option value="https://dog.ceo/api/breeds/image/random">dog.ceo</option>
-  <option value="https://api.chucknorris.io/jokes/random">chucknorris</option>
+<option value="https://randomfox.ca/floof/">randomfox
+<option value="https://dog.ceo/api/breeds/image/random">dog.ceo
+<option value="https://api.chucknorris.io/jokes/random">chucknorris
 </select><br><br>
 
-<!-- Div to show the JSON data -->
-<div id="myDiv1">...</div>
+you make the JSON show up in the DIV<br><br>
+
+<div id="MyDiv1">...</div>
