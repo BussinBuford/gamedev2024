@@ -3,7 +3,8 @@
 <audio id="background-music" src="./audio/Thick of it.mp3" autoplay loop></audio>
 
 <button onclick="document.getElementById('background-music').play()">Play</button>
-<button onclick="document.getElementById('background-music').pause()">Pause</button><br><br>
+<button onclick="document.getElementById('background-music').pause()">Pause</button>
+<button onclick="document.getElementById('background-music').pause(); document.getElementById('background-music').currentTime = 0;">Stop</button><br><br>
 
 <script>
   function myShowJSON(link){
