@@ -1,14 +1,23 @@
-<h1 align=center>t1a13 JSON</h1><br>
-
-<audio id="background-music" src="./audio/Thick of it.mp3" autoplay loop></audio>
-
-<button onclick="document.getElementById('background-music').play()">Play</button>
-<button onclick="document.getElementById('background-music').pause()">Pause</button>
-<button onclick="document.getElementById('background-music').pause(); document.getElementById('background-music').currentTime = 0;">Stop</button><br><br>
+<h1 align=center>t1a13 JSON</h1>
 
 <script>
   function myShowJSON(link){
     document.getElementById('myText1').value = link
+    if (link.includes('exchangerate-api')) {
+      if (link.includes('USD')) {
+        document.getElementById('otherCurrenciesDropdown').style.display = 'none'
+      } else {
+        document.getElementById('otherCurrenciesDropdown').style.display = 'inline'
+      }
+      
+      fetch(link).then(response => response.json()).then(data => {
+        const options = Object.keys(data.rates).map(currency => `<option value="${currency}">${currency}</option>`).join('')
+        document.getElementById('currencyDropdown').innerHTML = `<select id="currencySelect" size=1>${options}</select>`
+      })
+    } else {
+      document.getElementById('currencyDropdown').innerHTML = ''
+      document.getElementById('otherCurrenciesDropdown').style.display = 'none'
+    }
   }
 
   async function fetchData() {
@@ -37,12 +46,29 @@ Explanation of JSON compared to javascript objects in this textarea.<br>
 <input type=button value="show JSON" onclick="fetchData()"><br><br>
 
 <select size=1 onchange="myShowJSON(this.value)">
-<option value="https://randomfox.ca/floof/">randomfox
+<option value="https://randomfox.ca/floof/">Random Fox
 <option value="https://dog.ceo/api/breeds/image/random">dog.ceo
-<option value="https://api.chucknorris.io/jokes/random">chucknorris
+<option value="https://api.chucknorris.io/jokes/random">Chuck Norris
+<option value="https://official-joke-api.appspot.com/random_joke">Random Joke
+<option value="https://api.exchangerate-api.com/v4/latest/USD">USD
 </select><br><br>
 
-You make the JSON show up in the DIV<br><br>
+<div id="otherCurrenciesDropdown" style="display:none">
+  <select size=1>
+    <option value="https://api.exchangerate-api.com/v4/latest/CAD">CAD
+    <option value="https://api.exchangerate-api.com/v4/latest/AED">AED
+    <option value="https://api.exchangerate-api.com/v4/latest/ALL">ALL
+    <option value="https://api.exchangerate-api.com/v4/latest/AMD">AMD
+    <option value="https://api.exchangerate-api.com/v4/latest/ANG">ANG
+    <option value="https://api.exchangerate-api.com/v4/latest/AOA">AOA
+    <option value="https://api.exchangerate-api.com/v4/latest/ARS">ARS
+    <option value="https://api.exchangerate-api.com/v4/latest/AUD">AUD
+    <option value="https://api.exchangerate-api.com/v4/latest/AWG">AWG
+    <option value="https://api.exchangerate-api.com/v4/latest/AZN">AZN
+  </select>
+</div><br><br>
+
+<div id="currencyDropdown"></div><br><br>
 
 <div style="display:flex;justify-content:space-between">
   <div id="MyDiv1" style="width:45%">...</div>
