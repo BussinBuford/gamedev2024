@@ -1,58 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fetch JSON Data</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f0f0f0;
-        }
-        h1 {
-            color: #333;
-        }
-        #data-container {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <h1>JSON Data Viewer</h1>
-    <button onclick="fetchData()">Fetch JSON Data</button>
-    <div id="data-container">
-        <!-- JSON data will be displayed here -->
-    </div>
+<h1 align=center>t1a16 multi-d array</h1>
 
-    <script>
-        // Function to fetch JSON data and display it
-        function fetchData() {
-            const url = 'https://jsonplaceholder.typicode.com/posts'; // Replace with your JSON endpoint
+<script>
+  let myMax = 3;
+  let myArrayManual = new Array(myMax);
+  let myArrayAuto = new Array(myMax).fill(0).map(() => 
+    new Array(myMax).fill(0).map(() => 
+      new Array(myMax).fill(0).map(() => 
+        new Array(myMax).fill(0).map(() => Math.floor(Math.random() * 100))
+      )
+    )
+  );
 
-            fetch(url)
-                .then(response => response.json()) // Parse the JSON response
-                .then(data => {
-                    console.log(data); // Display in the console
-                    const container = document.getElementById('data-container');
+  function updateVisualization() {
+    let sliceIndex = document.getElementById('sliceInput').value;
+    let html = "";
+    for (let i = 0; i < myMax; i++) {
+      html += "<tr>";
+      for (let j = 0; j < myMax; j++) {
+        html += `<td>myArrayAuto[${sliceIndex}][${i}][${j}] = ${myArrayAuto[sliceIndex][i][j]}</td>`;
+      }
+      html += "</tr><br>";
+    }
+    document.getElementById('myDiv01').innerHTML = html;
+  }
+</script>
 
-                    // Clear the container first
-                    container.innerHTML = '';
+Input: <input type="text" id="myFirstName" value="fred"><br>
 
-                    // Display each item in the JSON
-                    data.forEach(item => {
-                        const itemDiv = document.createElement('div');
-                        itemDiv.style.marginBottom = '10px';
-                        itemDiv.innerHTML = `<strong>ID:</strong> ${item.id} <br> <strong>Title:</strong> ${item.title} <br> <strong>Body:</strong> ${item.body}`;
-                        container.appendChild(itemDiv);
-                    });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-    </script>
-</body>
-</html>
+<input type="button" value="Set Manual Array" onclick="{
+  myManualArray = [[3, 4, 2], [1, 2, 3], [5, 6, 7]];
+  document.getElementById('myDiv01').innerHTML = 'You set the array';
+}">
+
+<input type="button" value="Show Manual Array" onclick="{
+  document.getElementById('myDiv01').innerHTML += console.log(myArrayManual);
+  for (myLoop0 = 0; myLoop0 < myMax; myLoop0++) {
+    for (myLoop1 = 0; myLoop1 < myMax; myLoop1++) {
+      document.getElementById('myDiv01').innerHTML += 
+        `myArrayManual[${myLoop0},${myLoop1}] = ${myArrayManual[myLoop0][myLoop1]}<br>`;
+    }
+  }
+}">
+
+<input type="button" value="Set Auto Array" onclick="{
+  updateVisualization();
+}"><br>
+
+4th Dimension Slice: <input type="range" id="sliceInput" min="0" max="2" value="0" oninput="updateVisualization()"><br>
+
+<div id="myDiv01">...</div>
