@@ -1,0 +1,35 @@
+<h1 align-center>t1a16 multi-d array</h1>
+
+<script>
+  // Set a few Global Variables
+  let myMax = 3
+  let myArrayManual = new Array(myMax)
+  let myArrayAuto = new Array(myMax)
+</script>
+
+Input:<input type=text id="myFirstName" value="fred"><br>
+
+<input type=button value="Set Manual Array" onclick="{
+  myManualArray = [ [3,4,2], [1,2,3], [5,6,7] ]
+
+  document.getElementById('myDiv01').innerHTML = 'You set the array'
+}">
+
+<input type=button value="Show Manual Array" onclick="{
+  document.getElementById('myDiv01').innerHTML +=
+    console.log(myArrayManual)
+  for (myLoop0=0; myLoop0 < myMax; myLoop0++){
+    for (myLoop1=0; myLoop0 < myMax; myLoop1++){
+      document.getElementById('myDiv01').innerHTML +=
+        `myArrayManual[${myLoop0},${myLoop1}] =
+        ${myArrayManual[myLoop0][myLoop1]}<br>`
+    }
+  }
+}">
+
+<input type=button value="Set Auto Array" onclick="{
+  myArrayAuto[0,0] = Math.floor(Math.random() * 100)
+  document.getElementById('myDiv01').innerHTML += 'You print it out
+}"><br>
+
+<div id="myDiv01">...</div>
