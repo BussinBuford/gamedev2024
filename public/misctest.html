@@ -1,8 +1,24 @@
-<h1 align=center>t1a16 multi-d array</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4D Array Visualization in 3D</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+
+<input type="range" id="sliceInput" min="0" max="2" value="0" step="1" oninput="updateVisualization()">
+<div id="container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
   let myMax = 3;
-  let myArrayManual = new Array(myMax);
+  let scene, camera, renderer, points;
   let myArrayAuto = new Array(myMax).fill(0).map(() => 
     new Array(myMax).fill(0).map(() => 
       new Array(myMax).fill(0).map(() => 
@@ -11,41 +27,63 @@
     )
   );
 
+  function init() {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('container').appendChild(renderer.domElement);
+
+    let geometry = new THREE.BufferGeometry();
+    let vertices = [];
+
+    for (let i = 0; i < myMax; i++) {
+      for (let j = 0; j < myMax; j++) {
+        for (let k = 0; k < myMax; k++) {
+          vertices.push(i - myMax / 2, j - myMax / 2, k - myMax / 2);
+        }
+      }
+    }
+
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    let material = new THREE.PointsMaterial({ size: 0.1, color: 0xffffff });
+    points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    animate();
+  }
+
   function updateVisualization() {
     let sliceIndex = document.getElementById('sliceInput').value;
-    let html = "";
+    let colors = [];
+    
     for (let i = 0; i < myMax; i++) {
-      html += "<tr>";
       for (let j = 0; j < myMax; j++) {
-        html += `<td>myArrayAuto[${sliceIndex}][${i}][${j}] = ${myArrayAuto[sliceIndex][i][j]}</td>`;
+        for (let k = 0; k < myMax; k++) {
+          let value = myArrayAuto[sliceIndex][i][j][k];
+          let colorValue = value / 100;
+          colors.push(colorValue, colorValue, 1); // Color based on the array value
+        }
       }
-      html += "</tr><br>";
     }
-    document.getElementById('myDiv01').innerHTML = html;
+    
+    let colorAttribute = new THREE.Float32BufferAttribute(colors, 3);
+    points.geometry.setAttribute('color', colorAttribute);
+    points.material.vertexColors = true;
   }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    points.rotation.x += 0.01;
+    points.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+
+  init();
+  updateVisualization();
 </script>
 
-Input: <input type="text" id="myFirstName" value="fred"><br>
-
-<input type="button" value="Set Manual Array" onclick="{
-  myManualArray = [[3, 4, 2], [1, 2, 3], [5, 6, 7]];
-  document.getElementById('myDiv01').innerHTML = 'You set the array';
-}">
-
-<input type="button" value="Show Manual Array" onclick="{
-  document.getElementById('myDiv01').innerHTML += console.log(myArrayManual);
-  for (myLoop0 = 0; myLoop0 < myMax; myLoop0++) {
-    for (myLoop1 = 0; myLoop1 < myMax; myLoop1++) {
-      document.getElementById('myDiv01').innerHTML += 
-        `myArrayManual[${myLoop0},${myLoop1}] = ${myArrayManual[myLoop0][myLoop1]}<br>`;
-    }
-  }
-}">
-
-<input type="button" value="Set Auto Array" onclick="{
-  updateVisualization();
-}"><br>
-
-4th Dimension Slice: <input type="range" id="sliceInput" min="0" max="2" value="0" oninput="updateVisualization()"><br>
-
-<div id="myDiv01">...</div>
+</body>
+</html>
