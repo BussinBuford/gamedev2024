@@ -3,111 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8 Buttons Decision with Text Boxes</title>
+    <title>Simple Decision Page</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 50px;
-        }
-
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            margin: 20px;
         }
 
         button {
             margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+            padding: 10px;
         }
 
         .input-container {
-            margin-top: 20px;
             display: none;
+            margin: 10px;
         }
 
-        .input-container input {
-            padding: 5px;
-            font-size: 16px;
-        }
-
-        .input-container label {
-            margin-right: 10px;
-            font-size: 16px;
+        #output-container {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Make a Decision</h1>
-    <div class="button-container">
-        <button onclick="showInputBox(1)">Button 1</button>
-        <button onclick="showInputBox(2)">Button 2</button>
-        <button onclick="showInputBox(3)">Button 3</button>
-        <button onclick="showInputBox(4)">Button 4</button>
-        <button onclick="showInputBox(5)">Button 5</button>
-        <button onclick="showInputBox(6)">Button 6</button>
-        <button onclick="showInputBox(7)">Button 7</button>
-        <button onclick="showInputBox(8)">Button 8</button>
-    </div>
+    <h1>Simple Decisions</h1>
+
+    <button onclick="decision1()">Button 1</button> <!-- No text box needed -->
+    <button onclick="decision2()">Button 2</button> <!-- Text box needed for confirmation -->
+    <button onclick="decision3()">Button 3</button> <!-- No text box needed -->
+    <button onclick="decision4()">Button 4</button> <!-- Text box for color input -->
+    <button onclick="decision5()">Button 5</button> <!-- No text box needed -->
+    <button onclick="decision6()">Button 6</button> <!-- Text box for name -->
+    <button onclick="decision7()">Button 7</button> <!-- Text box for URL -->
+    <button onclick="decision8()">Button 8</button> <!-- No text box needed -->
 
     <div id="input-container" class="input-container">
         <label id="input-label" for="user-input"></label>
-        <input type="text" id="user-input" placeholder="Enter something">
+        <input type="text" id="user-input" placeholder="">
         <button onclick="handleInput()">Submit</button>
     </div>
 
     <div id="output-container"></div>
 
     <script>
-        let currentButton = null;
+        let currentAction = null;
 
-        function showInputBox(buttonNumber) {
-            currentButton = buttonNumber;
-            const inputContainer = document.getElementById("input-container");
-            const inputLabel = document.getElementById("input-label");
-            inputContainer.style.display = "block";
-            inputLabel.textContent = "Button " + buttonNumber + " action:";
-            document.getElementById("user-input").value = "";  // Clear previous input
+        function showInputBox(labelText, placeholder, action) {
+            document.getElementById("input-label").textContent = labelText;
+            document.getElementById("user-input").placeholder = placeholder;
+            document.getElementById("user-input").value = ""; // Clear input
+            document.getElementById("input-container").style.display = "block";
+            currentAction = action; // Store the current action to be triggered on submit
+        }
+
+        function hideInputBox() {
+            document.getElementById("input-container").style.display = "none";
+        }
+
+        function decision1() {
+            const output = document.getElementById("output-container");
+            output.innerHTML += "<p>You clicked Button 1: No input needed.</p>";
+        }
+
+        function decision2() {
+            showInputBox("Enter something for Button 2:", "Enter text", () => {
+                const userInput = document.getElementById("user-input").value;
+                const output = document.getElementById("output-container");
+                output.innerHTML += `<p>Button 2 result: You entered '${userInput}'</p>`;
+            });
+        }
+
+        function decision3() {
+            const output = document.getElementById("output-container");
+            output.innerHTML += `<p>Button 3 generated a random number: ${Math.floor(Math.random() * 100)}</p>`;
+        }
+
+        function decision4() {
+            showInputBox("Enter a color for the background:", "e.g., red, blue", () => {
+                const color = document.getElementById("user-input").value;
+                document.body.style.backgroundColor = color;
+                const output = document.getElementById("output-container");
+                output.innerHTML += `<p>Button 4 changed background to: ${color}</p>`;
+            });
+        }
+
+        function decision5() {
+            const result = Math.sqrt(144);
+            const output = document.getElementById("output-container");
+            output.innerHTML += `<p>Button 5 shows square root of 144: ${result}</p>`;
+        }
+
+        function decision6() {
+            showInputBox("Enter your name:", "Enter your name", () => {
+                const userName = document.getElementById("user-input").value;
+                const output = document.getElementById("output-container");
+                output.innerHTML += `<p>Hello, ${userName}!</p>`;
+            });
+        }
+
+        function decision7() {
+            showInputBox("Enter a URL to visit:", "e.g., https://www.example.com", () => {
+                const url = document.getElementById("user-input").value;
+                if (url) {
+                    window.location.href = url;
+                } else {
+                    const output = document.getElementById("output-container");
+                    output.innerHTML += "<p>Button 7: No URL entered.</p>";
+                }
+            });
+        }
+
+        function decision8() {
+            const randomBool = Math.random() > 0.5;
+            const output = document.getElementById("output-container");
+            output.innerHTML += `<p>Button 8 result: ${randomBool ? "You got lucky!" : "Better luck next time."}</p>`;
         }
 
         function handleInput() {
-            const userInput = document.getElementById("user-input").value;
-            const outputContainer = document.getElementById("output-container");
-            document.getElementById("input-container").style.display = "none"; // Hide input box after submit
-
-            switch (currentButton) {
-                case 1:
-                    outputContainer.innerHTML += `<p>You entered for Button 1: ${userInput}</p>`;
-                    break;
-                case 2:
-                    outputContainer.innerHTML += `<p>Button 2 action based on input: ${userInput}</p>`;
-                    break;
-                case 3:
-                    outputContainer.innerHTML += `<p>Button 3 generated random number: ${Math.floor(Math.random() * 100)}</p>`;
-                    break;
-                case 4:
-                    document.body.style.backgroundColor = userInput;
-                    outputContainer.innerHTML += `<p>Changed background color to: ${userInput}</p>`;
-                    break;
-                case 5:
-                    const result = Math.sqrt(144);
-                    outputContainer.innerHTML += `<p>Button 5 shows the square root of 144: ${result}</p>`;
-                    break;
-                case 6:
-                    outputContainer.innerHTML += `<p>Hello, ${userInput}!</p>`;
-                    break;
-                case 7:
-                    window.location.href = userInput || "https://www.example.com";
-                    break;
-                case 8:
-                    const randomBool = Math.random() > 0.5;
-                    outputContainer.innerHTML += `<p>Button 8 result: ${randomBool ? "You got lucky!" : "Better luck next time."}</p>`;
-                    break;
-                default:
-                    break;
+            if (currentAction) {
+                currentAction(); // Trigger the stored action when Submit is clicked
+                hideInputBox(); // Hide the input box after submitting
             }
         }
     </script>
