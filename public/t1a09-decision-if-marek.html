@@ -3,85 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <h1 align=center>t1a09 decisions</h1>
+    <title>Basic Page</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            font-family: sans-serif;
+            margin: 20px;
         }
 
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        .input-container {
+            display: none;
+            margin-top: 10px;
         }
 
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        #output-container {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Make a Decision</h1>
-    <div class="button-container">
-        <button onclick="decision1()">Button 1</button>
-        <button onclick="decision2()">Button 2</button>
-        <button onclick="decision3()">Button 3</button>
-        <button onclick="decision4()">Button 4</button>
-        <button onclick="decision5()">Button 5</button>
-        <button onclick="decision6()">Button 6</button>
-        <button onclick="decision7()">Button 7</button>
-        <button onclick="decision8()">Button 8</button>
+    <button onclick="decision1()">Button 1</button>
+    <button onclick="decision2()">Button 2</button>
+    <button onclick="decision3()">Button 3</button>
+    <button onclick="decision4()">Button 4</button>
+    <button onclick="decision5()">Button 5</button>
+    <button onclick="decision6()">Button 6</button>
+    <button onclick="decision7()">Button 7</button>
+    <button onclick="decision8()">Button 8</button>
+
+    <div id="input-container" class="input-container">
+        <label id="input-label" for="user-input"></label>
+        <input type="text" id="user-input">
+        <button onclick="handleInput()">Submit</button>
     </div>
 
+    <div id="output-container"></div>
+
     <script>
+        let currentAction = null;
+
+        function showInputBox(labelText, action) {
+            document.getElementById("input-label").textContent = labelText;
+            document.getElementById("user-input").value = "";
+            document.getElementById("input-container").style.display = "block";
+            currentAction = action;
+        }
+
+        function hideInputBox() {
+            document.getElementById("input-container").style.display = "none";
+        }
+
         function decision1() {
-            let userInput = prompt("Enter something for Button 1:");
-            alert("You entered: " + userInput);
+            const output = document.getElementById("output-container");
+            output.innerHTML += "Button 1 clicked.<br>";
         }
 
         function decision2() {
-            let confirmDecision = confirm("Are you sure you want to proceed with Button 2?");
-            if (confirmDecision) {
-                alert("You chose to proceed!");
-            } else {
-                alert("You canceled.");
-            }
+            showInputBox("Enter value:", () => {
+                const userInput = document.getElementById("user-input").value;
+                const output = document.getElementById("output-container");
+                output.innerHTML += `Button 2: ${userInput}<br>`;
+            });
         }
 
         function decision3() {
-            alert("Button 3 clicked. Here's a random number: " + Math.floor(Math.random() * 1000));
+            const output = document.getElementById("output-container");
+            output.innerHTML += `Button 3: ${Math.floor(Math.random() * 100)}<br>`;
         }
 
         function decision4() {
-            let color = prompt("Choose a background color (e.g., red, blue, yellow):");
-            document.body.style.backgroundColor = color;
+            showInputBox("Enter color:", () => {
+                const color = document.getElementById("user-input").value;
+                document.body.style.backgroundColor = color;
+                const output = document.getElementById("output-container");
+                output.innerHTML += `Button 4: ${color}<br>`;
+            });
         }
 
         function decision5() {
-            let result = Math.sqrt(144);
-            alert("The square root of 144 is: " + result);
+            const output = document.getElementById("output-container");
+            output.innerHTML += `Button 5: 12<br>`;
         }
 
         function decision6() {
-            let userName = prompt("Enter your name:");
-            document.body.innerHTML += `<h2>Hello, ${userName}!</h2>`;
+            showInputBox("Enter name:", () => {
+                const userName = document.getElementById("user-input").value;
+                const output = document.getElementById("output-container");
+                output.innerHTML += `Button 6: ${userName}<br>`;
+            });
         }
 
         function decision7() {
-            window.location.href = "https://www.example.com";
+            showInputBox("Enter URL:", () => {
+                const url = document.getElementById("user-input").value;
+                if (url) {
+                    window.location.href = url;
+                }
+            });
         }
 
         function decision8() {
-            let randomBool = Math.random() > 0.5;
-            if (randomBool) {
-                alert("You got lucky!");
-            } else {
-                alert("Better luck next time.");
+            const randomBool = Math.random() > 0.5;
+            const output = document.getElementById("output-container");
+            output.innerHTML += `Button 8: ${randomBool ? "Success" : "Fail"}<br>`;
+        }
+
+        function handleInput() {
+            if (currentAction) {
+                currentAction();
+                hideInputBox();
             }
         }
     </script>
