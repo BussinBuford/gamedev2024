@@ -1,89 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>4D Array Visualization in 3D</title>
-  <style>
-    body { margin: 0; }
-    canvas { display: block; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8 Buttons Decision with Text Boxes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .input-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .input-container input {
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .input-container label {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
+    <h1>Make a Decision</h1>
+    <div class="button-container">
+        <button onclick="showInputBox(1)">Button 1</button>
+        <button onclick="showInputBox(2)">Button 2</button>
+        <button onclick="showInputBox(3)">Button 3</button>
+        <button onclick="showInputBox(4)">Button 4</button>
+        <button onclick="showInputBox(5)">Button 5</button>
+        <button onclick="showInputBox(6)">Button 6</button>
+        <button onclick="showInputBox(7)">Button 7</button>
+        <button onclick="showInputBox(8)">Button 8</button>
+    </div>
 
-<input type="range" id="sliceInput" min="0" max="2" value="0" step="1" oninput="updateVisualization()">
-<div id="container"></div>
+    <div id="input-container" class="input-container">
+        <label id="input-label" for="user-input"></label>
+        <input type="text" id="user-input" placeholder="Enter something">
+        <button onclick="handleInput()">Submit</button>
+    </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <div id="output-container"></div>
 
-<script>
-  let myMax = 3;
-  let scene, camera, renderer, points;
-  let myArrayAuto = new Array(myMax).fill(0).map(() => 
-    new Array(myMax).fill(0).map(() => 
-      new Array(myMax).fill(0).map(() => 
-        new Array(myMax).fill(0).map(() => Math.floor(Math.random() * 100))
-      )
-    )
-  );
+    <script>
+        let currentButton = null;
 
-  function init() {
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
-
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('container').appendChild(renderer.domElement);
-
-    let geometry = new THREE.BufferGeometry();
-    let vertices = [];
-
-    for (let i = 0; i < myMax; i++) {
-      for (let j = 0; j < myMax; j++) {
-        for (let k = 0; k < myMax; k++) {
-          vertices.push(i - myMax / 2, j - myMax / 2, k - myMax / 2);
+        function showInputBox(buttonNumber) {
+            currentButton = buttonNumber;
+            const inputContainer = document.getElementById("input-container");
+            const inputLabel = document.getElementById("input-label");
+            inputContainer.style.display = "block";
+            inputLabel.textContent = "Button " + buttonNumber + " action:";
+            document.getElementById("user-input").value = "";  // Clear previous input
         }
-      }
-    }
 
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    let material = new THREE.PointsMaterial({ size: 0.1, color: 0xffffff });
-    points = new THREE.Points(geometry, material);
-    scene.add(points);
+        function handleInput() {
+            const userInput = document.getElementById("user-input").value;
+            const outputContainer = document.getElementById("output-container");
+            document.getElementById("input-container").style.display = "none"; // Hide input box after submit
 
-    animate();
-  }
-
-  function updateVisualization() {
-    let sliceIndex = document.getElementById('sliceInput').value;
-    let colors = [];
-    
-    for (let i = 0; i < myMax; i++) {
-      for (let j = 0; j < myMax; j++) {
-        for (let k = 0; k < myMax; k++) {
-          let value = myArrayAuto[sliceIndex][i][j][k];
-          let colorValue = value / 100;
-          colors.push(colorValue, colorValue, 1); // Color based on the array value
+            switch (currentButton) {
+                case 1:
+                    outputContainer.innerHTML += `<p>You entered for Button 1: ${userInput}</p>`;
+                    break;
+                case 2:
+                    outputContainer.innerHTML += `<p>Button 2 action based on input: ${userInput}</p>`;
+                    break;
+                case 3:
+                    outputContainer.innerHTML += `<p>Button 3 generated random number: ${Math.floor(Math.random() * 100)}</p>`;
+                    break;
+                case 4:
+                    document.body.style.backgroundColor = userInput;
+                    outputContainer.innerHTML += `<p>Changed background color to: ${userInput}</p>`;
+                    break;
+                case 5:
+                    const result = Math.sqrt(144);
+                    outputContainer.innerHTML += `<p>Button 5 shows the square root of 144: ${result}</p>`;
+                    break;
+                case 6:
+                    outputContainer.innerHTML += `<p>Hello, ${userInput}!</p>`;
+                    break;
+                case 7:
+                    window.location.href = userInput || "https://www.example.com";
+                    break;
+                case 8:
+                    const randomBool = Math.random() > 0.5;
+                    outputContainer.innerHTML += `<p>Button 8 result: ${randomBool ? "You got lucky!" : "Better luck next time."}</p>`;
+                    break;
+                default:
+                    break;
+            }
         }
-      }
-    }
-    
-    let colorAttribute = new THREE.Float32BufferAttribute(colors, 3);
-    points.geometry.setAttribute('color', colorAttribute);
-    points.material.vertexColors = true;
-  }
-
-  function animate() {
-    requestAnimationFrame(animate);
-    points.rotation.x += 0.01;
-    points.rotation.y += 0.01;
-    renderer.render(scene, camera);
-  }
-
-  init();
-  updateVisualization();
-</script>
-
+    </script>
 </body>
 </html>
