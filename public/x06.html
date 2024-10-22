@@ -19,7 +19,7 @@
       display: block;
       border: 2px solid #444;
     }
-    #score, #timer {
+    #score, #timer, #highscore {
       position: fixed;
       top: 10px;
       font-size: 24px;
@@ -30,6 +30,10 @@
     }
     #timer {
       right: 10px;
+    }
+    #highscore {
+      right: 50%;
+      transform: translateX(50%);
     }
     #startScreen, #endScreen {
       position: absolute;
@@ -55,6 +59,9 @@
     .miss {
       border: 2px solid red;
     }
+    canvas.active {
+      cursor: none; /* Hide the cursor */
+    }
   </style>
 </head>
 <body>
@@ -66,11 +73,13 @@
   <div id="endScreen">
     <h1>Game Over</h1>
     <p>Your Score: <span id="finalScore">0</span></p>
-    <p>Click to Restart</p>
+    <p>High Score: <span id="highScoreDisplay">0</span></p>
+    <p>Click to Restart (after 3 seconds)</p>
   </div>
 
   <div id="score">Score: 0</div>
   <div id="timer">Time: 30</div>
+  <div id="highscore">High Score: 0</div>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
 
   <script>
@@ -81,13 +90,21 @@
     const startScreen = document.getElementById('startScreen');
     const endScreen = document.getElementById('endScreen');
     const finalScoreElement = document.getElementById('finalScore');
+    const highScoreDisplay = document.getElementById('highScoreDisplay');
+    const highScoreElement = document.getElementById('highscore');
 
     let score = 0;
-    let timeLeft = 30; // Game time in seconds
+    let timeLeft = 30;
+    let highScore = getHighScore(); // Fetch saved high score from cookies
+    let canRestart = false;
     let gameInterval, timerInterval;
 
     let crosshair = { x: canvas.width / 2, y: canvas.height / 2, size: 20 };
     let target = { x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: 40, speed: 2 };
+
+    // Set high score in UI
+    highScoreDisplay.textContent = highScore;
+    highScoreElement.textContent = `High Score: ${highScore}`;
 
     // Function to draw crosshair
     function drawCrosshair() {
@@ -137,8 +154,8 @@
     // Mouse move event to update crosshair position
     canvas.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
-      crosshair.x = e.clientX - rect.left;
-      crosshair.y = e.clientY - rect.top;
+      crosshair.x = Math.min(Math.max(e.clientX - rect.left, 0), canvas.width); // Restrict movement inside canvas
+      crosshair.y = Math.min(Math.max(e.clientY - rect.top, 0), canvas.height); // Restrict movement inside canvas
     });
 
     // Mouse click event for shooting
@@ -169,6 +186,7 @@
       timeLeft = 30;
       scoreElement.textContent = `Score: 0`;
       timerElement.textContent = `Time: 30`;
+      canvas.classList.add('active'); // Hide cursor
 
       startScreen.classList.remove('active'); // Hide start screen
       endScreen.classList.remove('active');  // Hide end screen
@@ -182,7 +200,22 @@
       clearInterval(timerInterval);
       cancelAnimationFrame(gameInterval);
       finalScoreElement.textContent = score;
+
+      // Update high score if beaten
+      if (score > highScore) {
+        highScore = score;
+        setHighScore(highScore); // Save high score to cookies
+        highScoreDisplay.textContent = highScore;
+        highScoreElement.textContent = `High Score: ${highScore}`;
+      }
+
+      canvas.classList.remove('active'); // Show cursor
+
       endScreen.classList.add('active'); // Show end screen
+
+      // 3-second delay before restart allowed
+      canRestart = false;
+      setTimeout(() => canRestart = true, 3000);
     }
 
     // Main game loop
@@ -198,8 +231,24 @@
 
     // Event listeners for starting and restarting the game
     startScreen.addEventListener('click', startGame);
-    endScreen.addEventListener('click', startGame);
+    endScreen.addEventListener('click', () => {
+      if (canRestart) {
+        startGame();
+      }
+    });
 
+    // High score management using cookies
+    function setHighScore(score) {
+      document.cookie = `highScore=${score}; path=/; max-age=31536000;`; // Save for 1 year
+    }
+
+    function getHighScore() {
+      const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('highScore='))
+        ?.split('=')[1];
+      return cookieValue ? parseInt(cookieValue) : 0;
+    }
   </script>
 </body>
 </html>
