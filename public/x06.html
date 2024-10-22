@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counter-Strike 1.6 Mini Shooter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #1a1a1a;
+    }
+    canvas {
+      background-color: #111;
+      display: block;
+      border: 2px solid #444;
+    }
+    #score, #timer {
+      position: fixed;
+      top: 10px;
+      font-size: 24px;
+      color: white;
+    }
+    #score {
+      left: 10px;
+    }
+    #timer {
+      right: 10px;
+    }
+    #startScreen, #endScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-size: 36px;
+      z-index: 10;
+    }
+    .hidden {
+      display: none;
+    }
+    .hit {
+      border: 2px solid lime;
+    }
+    .miss {
+      border: 2px solid red;
+    }
+  </style>
+</head>
+<body>
+  <div id="startScreen">
+    <h1>Welcome to CS 1.6 Shooter</h1>
+    <p>Click to Start</p>
+  </div>
+  
+  <div id="endScreen" class="hidden">
+    <h1>Game Over</h1>
+    <p>Your Score: <span id="finalScore">0</span></p>
+    <p>Click to Restart</p>
+  </div>
+
+  <div id="score">Score: 0</div>
+  <div id="timer">Time: 30</div>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreElement = document.getElementById('score');
+    const timerElement = document.getElementById('timer');
+    const startScreen = document.getElementById('startScreen');
+    const endScreen = document.getElementById('endScreen');
+    const finalScoreElement = document.getElementById('finalScore');
+
+    let score = 0;
+    let timeLeft = 30; // Game time in seconds
+    let gameInterval, timerInterval;
+
+    let crosshair = { x: canvas.width / 2, y: canvas.height / 2, size: 20 };
+    let target = { x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: 40, speed: 2 };
+
+    // Function to draw crosshair
+    function drawCrosshair() {
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(crosshair.x - crosshair.size, crosshair.y);
+      ctx.lineTo(crosshair.x + crosshair.size, crosshair.y);
+      ctx.moveTo(crosshair.x, crosshair.y - crosshair.size);
+      ctx.lineTo(crosshair.x, crosshair.y + crosshair.size);
+      ctx.stroke();
+    }
+
+    // Function to draw the target
+    function drawTarget() {
+      ctx.fillStyle = 'yellow';
+      ctx.beginPath();
+      ctx.arc(target.x, target.y, target.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Function to move target randomly
+    function moveTarget() {
+      target.x += (Math.random() - 0.5) * target.speed * 2;
+      target.y += (Math.random() - 0.5) * target.speed * 2;
+
+      if (target.x < 0) target.x = 0;
+      if (target.x > canvas.width) target.x = canvas.width;
+      if (target.y < 0) target.y = 0;
+      if (target.y > canvas.height) target.y = canvas.height;
+    }
+
+    // Function to check if shot hit the target
+    function isHit(x, y) {
+      const dist = Math.sqrt((x - target.x) ** 2 + (y - target.y) ** 2);
+      return dist <= target.size;
+    }
+
+    // Update score and respawn target
+    function updateScore() {
+      score++;
+      scoreElement.textContent = `Score: ${score}`;
+      target.x = Math.random() * canvas.width;
+      target.y = Math.random() * canvas.height;
+    }
+
+    // Mouse move event to update crosshair position
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      crosshair.x = e.clientX - rect.left;
+      crosshair.y = e.clientY - rect.top;
+    });
+
+    // Mouse click event for shooting
+    canvas.addEventListener('click', (e) => {
+      if (isHit(crosshair.x, crosshair.y)) {
+        canvas.classList.add('hit');
+        updateScore();
+      } else {
+        canvas.classList.add('miss');
+      }
+      setTimeout(() => canvas.classList.remove('hit', 'miss'), 100);
+    });
+
+    // Countdown timer
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerElement.textContent = `Time: ${timeLeft}`;
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    // Start the game
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+      scoreElement.textContent = `Score: 0`;
+      timerElement.textContent = `Time: 30`;
+      startScreen.classList.add('hidden');
+      endScreen.classList.add('hidden');
+      
+      gameInterval = requestAnimationFrame(gameLoop);
+      startTimer();
+    }
+
+    // End the game
+    function endGame() {
+      clearInterval(timerInterval);
+      cancelAnimationFrame(gameInterval);
+      finalScoreElement.textContent = score;
+      endScreen.classList.remove('hidden');
+    }
+
+    // Main game loop
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      moveTarget();  // Move target randomly
+
+      drawCrosshair(); // Draw player crosshair
+      drawTarget(); // Draw the target
+
+      gameInterval = requestAnimationFrame(gameLoop); // Call gameLoop on next frame
+    }
+
+    // Event listeners for starting and restarting the game
+    startScreen.addEventListener('click', startGame);
+    endScreen.addEventListener('click', startGame);
+  </script>
+</body>
+</html>
