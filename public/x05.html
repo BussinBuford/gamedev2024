@@ -51,8 +51,8 @@
 </head>
 <body>
 
-  <h1>Minesweeper</h1>
-  <div id="status">Good luck!</div>
+  <h1>X05 Minesweeper</h1>
+  <div id="status">You do know how to play minesweeper, right?</div>
   <div class="game-container">
     <div id="grid"></div>
   </div>
@@ -225,7 +225,7 @@
       if (gameOver) return;
       const unrevealedCells = cells.length - revealedCells - flags;
       if (unrevealedCells === 0 && flags === mineCount) {
-        statusElement.innerText = 'You Win!';
+        statusElement.innerText = 'Congragulations, you dont suck!';
         gameOver = true;
         revealAllMines();
       }
