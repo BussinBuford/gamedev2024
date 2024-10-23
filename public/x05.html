@@ -156,7 +156,7 @@
         cell.classList.add('mine');
         gameOver = true;
         revealAllMines();
-        statusElement.innerText = 'Game Over!';
+        statusElement.innerText = 'Damn dude... you suck.';
       } else {
         const adjacentMines = countAdjacentMines(row, col);
         if (adjacentMines > 0) {
@@ -236,7 +236,7 @@
       firstClick = true;
       revealedCells = 0;
       flags = 0;
-      statusElement.innerText = 'Good luck!';
+      statusElement.innerText = 'You do know how to play minesweeper, right?';
       setGridSize();
       createGrid();
     }
