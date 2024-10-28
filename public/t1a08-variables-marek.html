@@ -1,69 +1,40 @@
-<h1 align=center>t1a08 variables</h1>
+<h1 align="center">t1a08 variables</h1>
 
 W3Schools link to variables <a href="https://www.w3schools.com/js/js_variables.asp">here</a><br>
 
 Input 1: <input type="text" id="myIn01" value="9"><br>
 Input 2: <input type="text" id="myIn02" value="10"><br>
-<input type=button value="Add and fix" onclick="{
-  myTotal = document.getElementbyId('myIn01').value + document.getElementbyId('myIn01').value
-  document.getElementById('myDiv01'.innerHTML = 'Your answer is ' + myTotal
+
+<input type="button" value="Add and fix" onclick="{
+    let myTotal = parseFloat(document.getElementById('myIn01').value) + parseFloat(document.getElementById('myIn02').value);
+    document.getElementById('myDiv01').innerHTML = 'Your answer is ' + myTotal;
 }">
 
-<div id="myDiv01">...</div>
+<div id="myDiv01">...</div><br>
 
-Copy and fix. parseInt() or parseFloat() try not to use var use let instead or const<br>
+<input type="button" value="Calculate Results" onclick="calculateResults()"><br><br>
 
-<input type=button value="Add2 and fix" onclick="{
-  let myX = document.getElementById('myIn01').value
-  let myY = document.getElementByID('myIn02').value
-  let myTotal = myX + myY
-  document.getElementById('myDiv01').innerHTML = 'Your answer is ' + myTotal
-}"><br><br>
-
-    <div id="results">
-        <h3>Results:</h3>
-        <p id="addResult">Addition Result: </p>
-        <p id="subResult">Subtraction Result: </p>
-        <p id="mulResult">Multiplication Result: </p>
-        <p id="divResult">Division Result: </p>
-    </div>
+<div id="results">
+    <h3>Results:</h3>
+    <p id="addResult">Add: </p>
+    <p id="subResult">Subtract: </p>
+    <p id="mulResult">Multiply: </p>
+    <p id="divResult">Divide: </p>
+</div>
 
 <script>
     function calculateResults() {
         let myX = parseFloat(document.getElementById('myIn01').value);
         let myY = parseFloat(document.getElementById('myIn02').value);
-            
-        // Boolean checks to see if inputs are valid
-        let isValidX = !isNaN(myX);
-        let isValidY = !isNaN(myY);
-
-        if (!isValidX || !isValidY) {
+        
+        if (isNaN(myX) || isNaN(myY)) {
             alert("Please enter valid numbers.");
             return;
-            }
+        }
 
-         // Clear previous results
-         document.getElementById('addResult').innerText = 'Addition Result: ';
-         document.getElementById('subResult').innerText = 'Subtraction Result: ';
-         document.getElementById('mulResult').innerText = 'Multiplication Result: ';
-         document.getElementById('divResult').innerText = 'Division Result: ';
-
-         // Perform calculations based on chosen operations
-            
-            let addTotal = myX + myY;
-            document.getElementById('addResult').innerText = 'Addition Result: ' + addTotal;
-            
-            
-            let subTotal = myX - myY;
-            document.getElementById('subResult').innerText = 'Subtraction Result: ' + subTotal;
-            
-            
-            let mulTotal = myX * myY;
-            document.getElementById('mulResult').innerText = 'Multiplication Result: ' + mulTotal;
-            
-            
-            let divTotal = myY !== 0 ? (myX / myY) : 'Cannot divide by zero';
-            document.getElementById('divResult').innerText = 'Division Result: ' + divTotal;
-            
+        document.getElementById('addResult').innerText = 'Addition Result: ' + (myX + myY);
+        document.getElementById('subResult').innerText = 'Subtraction Result: ' + (myX - myY);
+        document.getElementById('mulResult').innerText = 'Multiplication Result: ' + (myX * myY);
+        document.getElementById('divResult').innerText = 'Division Result: ' + (myY !== 0 ? (myX / myY) : 'Cannot divide by zero');
     }
 </script>
