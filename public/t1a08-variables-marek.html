@@ -15,7 +15,6 @@ Input 2: <input type="text" id="myIn02" value="10"><br>
 <input type="button" value="Calculate Results" onclick="calculateResults()"><br><br>
 
 <div id="results">
-    <p id="addResult">Add: </p>
     <p id="subResult">Subtract: </p>
     <p id="mulResult">Multiply: </p>
     <p id="divResult">Divide: </p>
@@ -31,7 +30,6 @@ Input 2: <input type="text" id="myIn02" value="10"><br>
             return;
         }
 
-        document.getElementById('addResult').innerText = 'Addition Result: ' + (myX + myY);
         document.getElementById('subResult').innerText = 'Subtraction Result: ' + (myX - myY);
         document.getElementById('mulResult').innerText = 'Multiplication Result: ' + (myX * myY);
         document.getElementById('divResult').innerText = 'Division Result: ' + (myY !== 0 ? (myX / myY) : 'Cannot divide by zero');
