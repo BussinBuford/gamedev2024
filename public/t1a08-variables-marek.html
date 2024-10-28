@@ -20,14 +20,50 @@ Copy and fix. parseInt() or parseFloat() try not to use var use let instead or c
   document.getElementById('myDiv01').innerHTML = 'Your answer is ' + myTotal
 }"><br><br>
 
-Other programming languages use defined variables
-<pre>
-  boolean
-  int8 or byte
-  int
-  double
-  float
-  char
-  string
-  
-</pre>
+    <div id="results">
+        <h3>Results:</h3>
+        <p id="addResult">Addition Result: </p>
+        <p id="subResult">Subtraction Result: </p>
+        <p id="mulResult">Multiplication Result: </p>
+        <p id="divResult">Division Result: </p>
+    </div>
+
+    <script>
+        function calculateResults() {
+            let myX = parseFloat(document.getElementById('myIn01').value);
+            let myY = parseFloat(document.getElementById('myIn02').value);
+            
+            // Boolean checks to see if inputs are valid
+            let isValidX = !isNaN(myX);
+            let isValidY = !isNaN(myY);
+
+            if (!isValidX || !isValidY) {
+                alert("Please enter valid numbers.");
+                return;
+            }
+
+            // Clear previous results
+            document.getElementById('addResult').innerText = 'Addition Result: ';
+            document.getElementById('subResult').innerText = 'Subtraction Result: ';
+            document.getElementById('mulResult').innerText = 'Multiplication Result: ';
+            document.getElementById('divResult').innerText = 'Division Result: ';
+
+            // Perform calculations based on chosen operations
+            
+                let addTotal = myX + myY;
+                document.getElementById('addResult').innerText = 'Addition Result: ' + addTotal;
+            
+            
+                let subTotal = myX - myY;
+                document.getElementById('subResult').innerText = 'Subtraction Result: ' + subTotal;
+            
+            
+                let mulTotal = myX * myY;
+                document.getElementById('mulResult').innerText = 'Multiplication Result: ' + mulTotal;
+            
+            
+                let divTotal = myY !== 0 ? (myX / myY) : 'Cannot divide by zero';
+                document.getElementById('divResult').innerText = 'Division Result: ' + divTotal;
+            
+        }
+    </script>
