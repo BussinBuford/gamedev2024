@@ -1,25 +1,57 @@
-<h1 align=center>t1a14 objects and arrays</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objects and Arrays</title>
+    <script>
+        // Define objects and arrays
+        const myArray = [
+            { name: 'Bob', age: 28 },
+            { name: 'Charlie', age: 32 }
+        ];
 
-Show your research about objects and arrays in the textarea here<br>
-<textarea rows=4 cols=70>
-  let myArray = [5, 2, 8, 2, 1];
-  let myObject = {name: 'John', age: 30, profession: 'Developer'};
+        const myObject = {
+            name: 'Alice',
+            hobbies: ['reading', 'coding', 'hiking'],
+            age: 25
+        };
 
-let myObject = {
-  name: 'Alice',
-  hobbies: ['reading', 'coding', 'hiking'], // Array inside object
-  age: 25
-};
+        // Function to display array contents
+        function showArrayWithObject() {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = JSON.stringify(myArray, null, 2);
+        }
 
-let myArray = [
-  { name: 'Bob', age: 28 }, // Object inside array
-  { name: 'Charlie', age: 32 }
-];
+        // Function to display object contents
+        function showObjectWithArray() {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = JSON.stringify(myObject, null, 2);
+        }
+    </script>
+</head>
+<body>
+    <h1 align="center">t1a14 objects and arrays</h1>
 
-  
-</textarea><br><br>
+    Show your research about objects and arrays in the textarea here<br>
+    <textarea rows="4" cols="70">
+  const myArray = [
+    { name: 'Bob', age: 28 }, // Object inside array
+    { name: 'Charlie', age: 32 }
+  ];
 
-Make 2 buttons and a div. The first button labelled "Array with Object in it" and the second button labelled "Object with Array in it"<br><br>
+  const myObject = {
+    name: 'Alice',
+    hobbies: ['reading', 'coding', 'hiking'], // Array inside object
+    age: 25
+  };
+    </textarea><br><br>
 
-  
+    Make 2 buttons and a div. The first button labelled "Array with Object in it" and the second button labelled "Object with Array in it"<br><br>
 
+    <button onclick="showArrayWithObject()">Array with Object in it</button>
+    <button onclick="showObjectWithArray()">Object with Array in it</button><br><br>
+
+    <div id="output" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px; width: 70%;"></div>
+</body>
+</html>
