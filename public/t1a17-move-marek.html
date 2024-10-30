@@ -32,4 +32,14 @@
   }, 30);
 }"><br><br>
 
+<input type="button" value="Stop Auto Move" onclick="{
+  clearInterval(myClock02);
+}"><br><br>
+
+<input type="button" value="Reset Position" onclick="{
+  clearInterval(myClock02);
+  document.getElementById('myImage01').style.left = '0px';
+  document.getElementById('myImage01').style.top = '0px';
+}"><br><br>
+
 <img id="myImage01" style="position:relative; width:100px; height:80px; top:0px; left:0px;" src="./images/tf-logoblk.jpg">
