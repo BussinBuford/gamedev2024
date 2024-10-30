@@ -1,14 +1,22 @@
 <h1 align=center>t1a15 events</h1>
 
-Get rid of the alerts and have 8 events o nthis page<br>
+Get rid of the alerts and have 8 events on this page<br>
 
-<b onTouchStart="{alert('onTouchStart??')}">Input:</b>
+<b onTouchStart="document.getElementById('myFirstName').value = 'onTouchStart event'">Input:</b>
 
 <input type=text id="myFirstName" value="fred"
-  onBlur="{'alert(onBlur??')}"><br><br>
+  onBlur="document.getElementById('myDiv01').innerHTML = 'onBlur event'"><br><br>
 
 <input type=button value="Show on page" onclick="{
   document.getElementById('myDiv01').innerHTML = 'Hey'
 }"><br><br>
 
-<div id="myDiv01" onMouseOver="{alert('onMouseOver')}">...</div><br><br>
+<div id="myDiv01" onMouseOver="document.getElementById('myDiv01').innerHTML = 'onMouseOver event'">...</div><br><br>
+
+<div id="myDiv02" onClick="document.getElementById('myDiv02').innerHTML = 'onClick event'">Click me</div><br><br>
+
+<input type="text" onFocus="this.value = 'onFocus event'"><br><br>
+
+<input type="text" onKeyUp="this.value = 'onKeyUp event'"><br><br>
+
+<input type="text" onKeyDown="this.value = 'onKeyDown event'"><br><br>
