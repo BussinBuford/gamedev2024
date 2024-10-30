@@ -28,11 +28,22 @@
     }
     document.getElementById('myDiv01').innerHTML = output;
   }
+
+  function showAutoArray() {
+    let output = '';
+    for (let i = 0; i < myMax; i++) {
+      for (let j = 0; j < myMax; j++) {
+        output += `myArrayAuto[${i}][${j}] = ${myArrayAuto[i][j]}<br>`;
+      }
+    }
+    document.getElementById('myDiv01').innerHTML = output;
+  }
 </script>
 
 Input: <input type="text" id="myFirstName" value="fred"><br>
 <input type="button" value="Set Manual Array" onclick="document.getElementById('myDiv01').innerHTML = 'You set the array<br>'">
 <input type="button" value="Show Manual Array" onclick="showManualArray()">
-<input type="button" value="Set Auto Array" onclick="setAutoArray()"><br>
+<input type="button" value="Set Auto Array" onclick="setAutoArray()">
+<input type="button" value="Show Auto Array" onclick="showAutoArray()"><br>
 
 <div id="myDiv01">...</div>
