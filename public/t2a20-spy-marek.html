@@ -1,26 +1,34 @@
-<h1 align=center>t2a06-spy-name.html</h1>
-<textarea id="myArea01" rows=4 cols=70>Hello how are you</textarea><br> 
+<h1 align="center">t2a06-spy-name.html</h1>
+<textarea id="myArea01" rows="4" cols="70">Hello how are you</textarea><br>
 
-
-<input type=button value="encrypt" onclick="{
-   let myTemp = ''
-   myString = document.getElementById('myArea01').value.toLowerCase().split('')
-   for (let myLoop=0;   myLoop < myString.length; myLoop++){
-      myTemp = myString[myLoop]
-      if (myString[myLoop] == 'e') {myTemp  = 'f'} 
-      if (myString[myLoop] == 'h') {myTemp  = 'i'} 
-      myString[myLoop] = myTemp
+<input type="button" value="encrypt" onclick="{
+   let myString = document.getElementById('myArea01').value;
+   let encryptedString = '';
+   for (let char of myString) {
+      let code = char.charCodeAt(0);
+      // Shift letters, numbers, and symbols by 1 in ASCII
+      if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122) || (code >= 48 && code <= 57)) {
+         code++;
+      }
+      encryptedString += String.fromCharCode(code);
    }
-   document.getElementById('myArea02').value = myString.join('')
+   document.getElementById('myArea02').value = encryptedString;
 }"><br><br>
 
+<textarea id="myArea02" rows="4" cols="70"></textarea><br>
 
-
-<textarea id="myArea02" rows=4 cols=70></textarea><br> 
-
-<input type=button value="decrypt" onclick="{
-   alert('Sorry, you have to do this!')
+<input type="button" value="decrypt" onclick="{
+   let myString = document.getElementById('myArea02').value;
+   let decryptedString = '';
+   for (let char of myString) {
+      let code = char.charCodeAt(0);
+      // Shift back letters, numbers, and symbols by 1 in ASCII
+      if ((code >= 66 && code <= 91) || (code >= 98 && code <= 123) || (code >= 49 && code <= 58)) {
+         code--;
+      }
+      decryptedString += String.fromCharCode(code);
+   }
+   document.getElementById('myArea03').value = decryptedString;
 }"><br><br>
 
-
-<textarea id="myArea03" rows=4 cols=70></textarea><br> 
+<textarea id="myArea03" rows="4" cols="70"></textarea><br>
