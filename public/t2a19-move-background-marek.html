@@ -30,24 +30,14 @@
       }
       updateBackgroundPosition();
     });
-  </script>
 
-  <h1 align="center">t2a19 Move Background</h1>
-
-  <input
-    id="myButton01"
-    type="button"
-    value="Background Move Left"
-    onclick="
+    // Button functionality
+    function moveBackgroundLeft() {
       myGlobalX -= 5;
       updateBackgroundPosition();
-    "
-  />
+    }
 
-  <input
-    type="button"
-    value="Auto Background Left Faster"
-    onclick="
+    function autoMoveLeftFaster() {
       clearInterval(myClock01);
       mySpeed01 -= 30;
       if (mySpeed01 < 10) { mySpeed01 = 10; }
@@ -55,13 +45,9 @@
         myGlobalX -= 5;
         updateBackgroundPosition();
       }, mySpeed01);
-    "
-  />
+    }
 
-  <input
-    type="button"
-    value="Auto Background Left Slower"
-    onclick="
+    function autoMoveLeftSlower() {
       clearInterval(myClock01);
       mySpeed01 += 30;
       if (mySpeed01 > 1000) { mySpeed01 = 1000; }
@@ -69,15 +55,25 @@
         myGlobalX -= 5;
         updateBackgroundPosition();
       }, mySpeed01);
-    "
-  />
+    }
+  </script>
+
+  <h1 align="center">t2a19 Move Background</h1>
+
+  <div style="text-align: center;">
+    <input id="myButton01" type="button" value="Background Move Left" onclick="moveBackgroundLeft()" />
+    <input type="button" value="Auto Background Left Faster" onclick="autoMoveLeftFaster()" />
+    <input type="button" value="Auto Background Left Slower" onclick="autoMoveLeftSlower()" />
+  </div>
 
   <br /><br />
 
-  <img
-    id="myImage01"
-    style="position: relative; width: 100px; height: 80px; top: 0px; left: 0px;"
-    src="./images/0-6233_trunks-super-saiyan-rage.jpg"
-    alt="Image of Trunks"
-  />
+  <div style="text-align: center;">
+    <img
+      id="myImage01"
+      style="position: relative; width: 100px; height: 80px; top: 0px; left: 0px;"
+      src="./images/0-6233_trunks-super-saiyan-rage.jpg"
+      alt="Image of Trunks"
+    />
+  </div>
 </body>
