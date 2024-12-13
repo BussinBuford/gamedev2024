@@ -6,8 +6,8 @@
    let encryptedString = '';
    for (let char of myString) {
       let code = char.charCodeAt(0);
-      // Shift letters, numbers, and symbols by 1 in ASCII
-      if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122) || (code >= 48 && code <= 57)) {
+      // Shift all printable characters (letters, numbers, symbols) by 1 in ASCII
+      if ((code >= 32 && code <= 126)) {
          code++;
       }
       encryptedString += String.fromCharCode(code);
@@ -22,8 +22,8 @@
    let decryptedString = '';
    for (let char of myString) {
       let code = char.charCodeAt(0);
-      // Shift back letters, numbers, and symbols by 1 in ASCII
-      if ((code >= 66 && code <= 91) || (code >= 98 && code <= 123) || (code >= 49 && code <= 58)) {
+      // Shift all printable characters (letters, numbers, symbols) back by 1 in ASCII
+      if ((code >= 33 && code <= 127)) {
          code--;
       }
       decryptedString += String.fromCharCode(code);
